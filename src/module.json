@@ -1,0 +1,38 @@
+{
+  "name": "foundry-cli",
+  "title": "foundry-cli",
+  "description": "",
+  "version": "This is auto replaced",
+  "author": "<your name>",
+  "authors": [
+    {
+      "name": "<your name>",
+      "email": "<optionally your e-mail address>",
+      "discord": "<optionally your discord username>"
+    }
+  ],
+  "minimumCoreVersion": "9",
+  "compatibleCoreVersion": "9",
+  "scripts": [],
+  "esmodules": ["module/foundry-cli.js"],
+  "styles": ["styles/foundry-cli.css"],
+  "packs": [],
+  "dependencies": [],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "socket": false,
+  "url": "This is auto replaced",
+  "manifest": "This is auto replaced",
+  "download": "This is auto replaced",
+  "license": "",
+  "readme": "",
+  "bugs": "",
+  "changelog": "",
+  "system": [],
+  "library": false
+}
