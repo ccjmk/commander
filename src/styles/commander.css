@@ -32,24 +32,23 @@
   margin-right: 5px;
 }
 
-.commander-modal .commander-suggestions .commander-suggestion-boolean {
-  color: gold;
+.commander-suggestion-boolean {
+  color: darkgoldenrod;
 }
 
-.commander-modal .commander-suggestions .commander-suggestion-number {
-  color: lightcoral;
+.commander-suggestion-number {
+  color: darkred;
 }
 
-.commander-modal .commander-suggestions .commander-suggestion-string {
-  color: cornflowerblue;
+.commander-suggestion-string {
+  color: darkblue;
 }
 
-.commander-modal .commander-suggestions .commander-suggestion-raw {
-  color: greenyellow;
+.commander-suggestion-raw {
+  color: darkgreen;
 }
 
 .commander-modal .commander-content {
-  padding: 10px;
   border-radius: 5px;
   background-image: url(../../../ui/parchment.jpg);
 }
@@ -58,6 +57,10 @@
   font-size: x-large;
   border: none;
   background: none;
+  padding: 10px;
+  box-sizing: content-box;
+  width: calc(100% - 20px);
+  z-index: 1;
 }
 
 .commander-modal .commander-content .commander-input::placeholder {
@@ -66,4 +69,13 @@
 
 .commander-modal .commander-content .commander-input:focus {
   box-shadow: none;
+}
+
+#commander-shadow-suggestion {
+  opacity: 40%;
+  padding: 10px;
+  top: -1px;
+  font-size: x-large;
+  position: absolute;
+  z-index: 0;
 }

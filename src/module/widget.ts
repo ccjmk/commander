@@ -25,13 +25,12 @@ export default class Widget extends Application {
     this.input.addEventListener('keyup', (ev) => {
       // need keyUP to have the latest key registered
       const commandInput = (ev.target as HTMLInputElement).value;
-      const suggestions = this.handler.suggestCommand(commandInput);
+      let suggestions = this.handler.suggestCommand(commandInput);
       if (suggestions?.length && ev.code === 'Tab') {
         this.input.value = suggestions[0] + ' ';
-        this.showSuggestions([suggestions.shift()!]);
-        return;
+        suggestions = [suggestions[0]];
       }
-      if (ev.code === 'Enter') {
+      if (suggestions?.length && ev.code === 'Enter') {
         this.handler.execute(commandInput);
         this.close();
         return;
@@ -70,32 +69,35 @@ export default class Widget extends Application {
   }
 
   showSuggestions = (suggs?: string[]) => {
+    const shadowSuggestion = document.getElementById('commander-shadow-suggestion')!;
     if (!suggs) {
       this.suggestions.style.display = 'none';
+      shadowSuggestion.innerHTML = '';
       return;
     }
-    let newSuggs: HTMLDivElement[] = [];
-    if (suggs.length === 1) {
+
+    if (suggs.length) {
       const command = this.handler.commands.get(suggs[0])!;
       const div = document.createElement('div');
       div.className = 'commander-suggestion';
-      let schema = `<div>${command.schema}</div>`;
+      let schema = `${command.schema}`;
       command.args.forEach((a) => {
         schema = schema.replace('$' + a.name, `<span class="commander-suggestion-${a.type}">$${a.name}</span>`);
       });
-      $(schema).appendTo(div);
-      newSuggs.push(div);
+      shadowSuggestion.innerHTML = schema;
     } else {
-      if (suggs.length === 0) {
-        suggs = ['No matching commands found'];
-      }
-      newSuggs = suggs.map((s) => {
-        const div = document.createElement('div');
-        div.className = 'commander-suggestion';
-        div.innerText = s;
-        return div;
-      });
+      shadowSuggestion.innerHTML = '';
     }
+
+    if (suggs.length === 0) {
+      suggs = ['No matching commands found']; // TODO i18n
+    }
+    const newSuggs = suggs.map((s) => {
+      const div = document.createElement('div');
+      div.className = 'commander-suggestion';
+      div.innerText = s;
+      return div;
+    });
 
     this.suggestions.replaceChildren(...newSuggs);
     this.suggestions.style.display = 'flex';
