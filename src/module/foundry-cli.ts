@@ -1,22 +1,23 @@
 /**
- * This is your TypeScript entry file for Foundry VTT.
- * Register custom settings, sheets, and constants using the Foundry API.
- * Change this heading to be more descriptive to your module, or remove it.
- * Author: [your name]
- * Content License: [copyright and-or license] If using an existing system
- * 					you may want to put a (link to a) license or copyright
- * 					notice here (e.g. the OGL).
- * Software License: [your license] Put your desired license here, which
- * 					 determines how others may use and modify your module.
+ * Author: Iñaki "ccjmk" Guastalli
+ * Content License: See CONTENT-LICENSE
+ * Software License: See LICENSE
  */
 
-// Import TypeScript modules
-import { registerSettings } from './settings';
+import { registerSettings } from './settingsConfig';
 import { preloadTemplates } from './preloadTemplates';
+import { MODULE_NAME } from './constants';
+import { setKeybindings } from './keybindingConfig';
+import { Handler } from './commandsHandler';
+import { infoCommand } from './commands/info';
+
+let handler: Handler;
 
 // Initialize module
 Hooks.once('init', async () => {
-  console.log('foundry-cli | Initializing foundry-cli');
+  console.log(`${MODULE_NAME} | Initializing foundry-cli`);
+  handler = new Handler();
+  handler.register(infoCommand);
 
   // Assign custom classes and constants here
 
@@ -25,19 +26,21 @@ Hooks.once('init', async () => {
 
   // Preload Handlebars templates
   await preloadTemplates();
-
-  // Register custom sheets (if any)
 });
 
 // Setup module
 Hooks.once('setup', async () => {
-  // Do anything after initialization but before
-  // ready
+  setKeybindings(handler);
 });
 
 // When ready
 Hooks.once('ready', async () => {
-  // Do anything once the module is ready
+  // Add CLI public api
+  (window as any).cli = {
+    register: handler.register,
+    commands: handler.commands,
+    execute: handler.execute,
+  };
 });
 
 // Add any additional hooks if necessary

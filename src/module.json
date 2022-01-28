@@ -1,16 +1,9 @@
 {
   "name": "foundry-cli",
-  "title": "foundry-cli",
-  "description": "",
+  "title": "Foundry CLI",
+  "description": "Command Line Interface for manipulating entities.",
   "version": "This is auto replaced",
-  "author": "<your name>",
-  "authors": [
-    {
-      "name": "<your name>",
-      "email": "<optionally your e-mail address>",
-      "discord": "<optionally your discord username>"
-    }
-  ],
+  "author": "ccjmk",
   "minimumCoreVersion": "9",
   "compatibleCoreVersion": "9",
   "scripts": [],

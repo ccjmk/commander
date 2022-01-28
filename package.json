@@ -1,20 +1,19 @@
 {
   "private": true,
   "name": "foundry-cli",
-  "description": "",
-  "license": "",
+  "description": "Command Line Interface for manipulating entities.",
+  "license": "MIT",
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/ccjmk/foundry-cli"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/ccjmk/foundry-cli/issues"
   },
   "contributors": [
     {
-      "name": "",
-      "email": ""
+      "name": "Iñaki 'ccjmk' Guastalli"
     }
   ],
   "scripts": {
