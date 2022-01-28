@@ -9,7 +9,7 @@ const rollupConfig = require('./rollup.config');
 /*  CONFIGURATION   */
 /********************/
 
-const name = 'foundry-cli';
+const name = 'commander';
 const sourceDirectory = './src';
 const distDirectory = './dist';
 const stylesDirectory = `${sourceDirectory}/styles`;

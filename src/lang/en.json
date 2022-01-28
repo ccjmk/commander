@@ -1,1 +1,59 @@
-{}
+{
+  "CMD": {
+    "Settings": {
+      "DebugMode": {
+        "Name": "Enable debug mode",
+        "Hint": "Logs into console a much finer detail of commands getting registered and executed",
+        "Log": "Debug mode [{value}]"
+      },
+      "OnlyGM": {
+        "Name": "Restrict to GM only",
+        "Hint": "Overrides command permissions to allow commands only for the Gamemaster"
+      }
+    },
+    "Handler": {
+      "Exec": {
+        "DebugRegex": "Regex for {commandName} ([ ] not part of regex): [{regex}]",
+        "DebugRunningWithArgs": "Executing '{commandName}' with args: {paramObj}`",
+        "NoMatchingCommand": "No matching command found",
+        "ArgumentsDontMatch": "Arguments don't match for command {commandName}",
+        "NotAllowed": "You are not allowed to run this command",
+        "NoGmAttempt": "Running commands disabled for non-GMs by module setting"
+      },
+      "Reg": {
+        "CommandAlreadyExists": "Command '{commandName}' already exists",
+        "InvalidString": "Unable to register command with incorrect data - '{fieldName}' required",
+        "InvalidArray": "Unable to register command with incorrect data - array 'args' required",
+        "InvalidArgument": "Unable to register command with incorrect data - type is not a supported argument type {argTypes}",
+        "InvalidFunction": "Unable to register command with incorrect data - '{function}' must be a function",
+        "InvalidRole": "Unable to register command with incorrect role: {role}",
+        "InvalidPermission": "Unable to register command with incorrect permission: {permission}"
+      }
+    },
+    "Keybindings": {
+      "Name": "Open",
+      "Hint": "Opens the Commander window"
+    },
+    "Widget": {
+      "comment": "PlaceholderQuantity is here so any translations can define how many placeholders they like",
+      "PlaceholderQuantity": "14",
+      "Placeholder1": "Command..",
+      "Placeholder2": "What shall we do today, master?",
+      "Placeholder3": "Your word is my command",
+      "Placeholder4": "Just say the word!",
+      "Placeholder5": "Using a mouse is for loosers, amirite?",
+      "Placeholder6": "A world of options at your fingertips!",
+      "Placeholder7": "Are you SURE you want to do that?",
+      "Placeholder8": ".. yes?",
+      "Placeholder9": "What's in your mind??",
+      "Placeholder10": "Will you remember to say 'please'?",
+      "Placeholder11": "How can I help?",
+      "Placeholder12": "What brings you to this part of town?",
+      "Placeholder13": "What can I do for you?",
+      "Placeholder14": "Run.."
+    },
+    "Debug": {
+      "NoGmAttempt": "Widget disabled for non-GMs by module setting."
+    }
+  }
+}

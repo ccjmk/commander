@@ -1,0 +1,30 @@
+import Command from '../../Command';
+import { ARGUMENT_TYPES } from '../../utils/moduleUtils';
+
+const allArgsCommand: Command = {
+  name: 'test',
+  schema: 'test $str $num $bool $raw',
+  args: [
+    {
+      name: 'str',
+      type: ARGUMENT_TYPES.STRING,
+    },
+    {
+      name: 'num',
+      type: ARGUMENT_TYPES.NUMBER,
+    },
+    {
+      name: 'bool',
+      type: ARGUMENT_TYPES.BOOLEAN,
+    },
+    {
+      name: 'raw',
+      type: ARGUMENT_TYPES.RAW,
+    },
+  ],
+  handler: ({ str, num, bool, raw }) => {
+    ui.notifications?.info(`string: [${str}] - number: [${num}] - boolean: [${bool}]`);
+    ui.notifications?.info(`raw: [${raw}]`);
+  },
+};
+export default allArgsCommand;

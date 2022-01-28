@@ -1,0 +1,69 @@
+.commander-shade {
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.commander-modal {
+  top: 50%;
+  left: 30%;
+  right: 30%;
+  position: absolute;
+  box-shadow: 0 0 5px var(--color-shadow-primary);
+}
+
+.commander-modal .commander-suggestions {
+  margin-left: 10px;
+  display: flex;
+  width: fit-content;
+  position: absolute;
+  top: -25px;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion {
+  font-size: large;
+  border-radius: 5px;
+  padding: 0 10px;
+  width: fit-content;
+  background: url(../../../ui/denim075.png) repeat;
+  color: white;
+  margin-right: 5px;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion-boolean {
+  color: gold;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion-number {
+  color: lightcoral;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion-string {
+  color: cornflowerblue;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion-raw {
+  color: greenyellow;
+}
+
+.commander-modal .commander-content {
+  padding: 10px;
+  border-radius: 5px;
+  background-image: url(../../../ui/parchment.jpg);
+}
+
+.commander-modal .commander-content .commander-input {
+  font-size: x-large;
+  border: none;
+  background: none;
+}
+
+.commander-modal .commander-content .commander-input::placeholder {
+  color: gray;
+}
+
+.commander-modal .commander-content .commander-input:focus {
+  box-shadow: none;
+}

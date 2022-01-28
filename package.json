@@ -1,20 +1,19 @@
 {
   "private": true,
-  "name": "foundry-cli",
-  "description": "",
-  "license": "",
+  "name": "commander",
+  "description": "Command launcher for running and registering commands executable solely by keyboard",
+  "license": "MIT",
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/ccjmk/commander"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/ccjmk/commander/issues"
   },
   "contributors": [
     {
-      "name": "",
-      "email": ""
+      "name": "Iñaki 'ccjmk' Guastalli"
     }
   ],
   "scripts": {
