@@ -50,28 +50,27 @@ export default class CommandHandler {
     ui.notifications?.warn('No matching command found'); // TODO i18n this
   };
 
-  register = (command: any, replace?: boolean) => {
-    if (
-      missingMandatoryField(command.name, 'name') ||
-      missingMandatoryField(command.scheme, 'scheme') ||
-      missingMandatoryArray(command.args, 'args')
-    )
-      return;
+  register = (command: unknown, replace?: boolean) => {
+    if (!isCommand(command)) return;
     if (this.commandMap.get(command.name) && !replace) {
-      ui.notifications?.error(`Command '${command.name}' already exists`); // TODO i18n this
-      return;
-    }
-    if (typeof command.handler !== 'function') {
-      ui.notifications?.error(
-        `Unable to register command with incorrect data - '${command.handler}' must be a function`,
-      ); // TODO i18n this
-      return;
-    }
-    for (const arg of command.args) {
-      if (invalidArgument(arg)) return;
+      throw new Error(`Command '${command.name}' already exists`); // TODO i18n this
     }
     this.commandMap.set(command.name, command);
   };
+}
+
+function isCommand(command: any): command is Command {
+  missingMandatoryField(command.name, 'name');
+  missingMandatoryField(command.scheme, 'scheme');
+  missingMandatoryArray(command.args, 'args');
+
+  if (typeof command.handler !== 'function') {
+    throw new Error(`Unable to register command with incorrect data - '${command.handler}' must be a function`); // TODO i18n this
+  }
+  for (const arg of command.args) {
+    isInvalidArgument(arg);
+  }
+  return true;
 }
 
 const missingMandatoryField = (field: any, fieldName: string) => {
@@ -80,25 +79,21 @@ const missingMandatoryField = (field: any, fieldName: string) => {
     field === null ||
     ((typeof field === 'string' || field instanceof String) && field.length === 0)
   ) {
-    ui.notifications?.error(`Unable to register command with incorrect data - '${fieldName}' required`); // TODO i18n this
-    return true;
+    throw new Error(`Unable to register command with incorrect data - '${fieldName}' required`); // TODO i18n this
   }
-  return false;
 };
 
 const missingMandatoryArray = (field: any, fieldName: string) => {
   if (field === undefined || field === null || (Array.isArray(field) && field.length === 0)) {
-    ui.notifications?.error(`Unable to register command with incorrect data - array '${fieldName}' required`); // TODO i18n this
-    return true;
+    throw new Error(`Unable to register command with incorrect data - array '${fieldName}' required`); // TODO i18n this
   }
-  return false;
 };
 
-const invalidArgument = (arg: any) => {
-  if (missingMandatoryField(arg.name, 'arg.name')) return true;
-  if (missingMandatoryField(arg.type, 'arg.type')) return true;
+const isInvalidArgument = (arg: any) => {
+  missingMandatoryField(arg.name, 'arg.name');
+  missingMandatoryField(arg.type, 'arg.type');
   if (!Object.values(ARGUMENT_TYPES).includes(arg.type)) {
-    ui.notifications?.error(
+    throw new Error(
       `Unable to register command with incorrect data - type is not a supported argument type ${Object.values(
         ARGUMENT_TYPES,
       )}`,

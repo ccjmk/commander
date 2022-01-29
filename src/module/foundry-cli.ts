@@ -5,7 +5,6 @@
  */
 
 import { registerSettings } from './settingsConfig';
-import { preloadTemplates } from './preloadTemplates';
 import { MODULE_NAME } from './constants';
 import { setKeybindings } from './keybindingConfig';
 import CommandHandler from './CommandHandler';
@@ -17,14 +16,15 @@ import sheetByPlayerCommand from './commands/sheet-name';
 import testQuotedCommand from './commands/test-quoted';
 import testNumberCommand from './commands/test-number';
 import testIntegerCommand from './commands/test-integer';
+import { Widget } from './Widget';
 
-let handler: CommandHandler;
+let widget: Widget;
 
 // Initialize module
 Hooks.once('init', async () => {
   console.log(`${MODULE_NAME} | Initializing foundry-cli`);
 
-  handler = new CommandHandler();
+  const handler = new CommandHandler();
   handler.register(testStringCommand);
   handler.register(testQuotedCommand);
   handler.register(testNumberCommand);
@@ -34,22 +34,21 @@ Hooks.once('init', async () => {
   handler.register(sheetByNameCommand);
   handler.register(sheetByPlayerCommand);
 
+  widget = new Widget(handler);
+  await widget.render();
+  // TODO ver si puede ir todo en el 'init'
+
   // Register custom module settings
   registerSettings();
 
-  // Preload Handlebars templates
-  await preloadTemplates();
+  const { commands, register, execute } = handler;
+  (window as any).cli = { commands, register, execute };
 });
 
 // Setup module
 Hooks.once('setup', async () => {
-  setKeybindings(handler);
-
-  (window as any).cli = {
-    commands: handler.commands,
-    register: handler.register,
-    execute: handler.execute,
-  };
+  setKeybindings(widget.show);
+  // TODO ver si se puede registar un hook cuando el modulo esta cargado
 });
 
 // When ready

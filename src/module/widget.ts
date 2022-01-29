@@ -1,32 +1,56 @@
 import CommandHandler from './CommandHandler';
+import { MODULE_NAME } from './constants';
 
-export default class Widget extends Dialog {
-  constructor(handler: CommandHandler) {
-    super(
-      {
-        title: 'FoundryCLI',
-        content: `<div><input id="fcli-input" type="text" value="" placeholder="Type to show suggestions"></div>`, // TODO i18n this
-        buttons: {},
-        default: '',
-      },
-      {
-        classes: [],
-        width: 720,
-        resizable: false,
-      },
-    );
+export class Widget {
+  constructor(private readonly handler: CommandHandler) {
     this.handler = handler;
   }
-  handler;
 
-  activateListeners(html: JQuery<HTMLElement>): void {
-    const input = document.getElementById('fcli-input') as HTMLInputElement;
-    input.addEventListener('keyup', (ev) => {
+  private widget!: HTMLDivElement;
+  private input!: HTMLInputElement;
+
+  render = async () => {
+    const template = await renderTemplate(`modules/${MODULE_NAME}/templates/widget.html`, {});
+    const parser = new DOMParser();
+    const html = parser.parseFromString(template, 'text/html');
+    this.widget = html.body.firstElementChild as HTMLDivElement;
+    document.body.append(this.widget);
+
+    this.input = document.getElementById('fcli-input') as HTMLInputElement;
+    this.input.addEventListener('keyup', (ev) => {
       if (ev.code !== 'Enter') return;
-      const comamnd = (ev.target as HTMLInputElement).value;
-      this.handler.execute(comamnd);
-      this.close();
+      const command = (ev.target as HTMLInputElement).value;
+      this.handler.execute(command);
+      this.hide();
     });
-    input.focus();
-  }
+
+    this.input.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+    });
+    const suggestions = document.getElementById('fcli-suggestion') as HTMLElement;
+    suggestions.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+    });
+
+    const div = document.getElementById('foundry-cli') as HTMLElement;
+    div.addEventListener('click', (ev) => {
+      this.hide();
+    });
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') {
+        this.hide();
+      }
+    });
+  };
+
+  show = () => {
+    this.input.value = '';
+    this.widget.style.display = 'block';
+    this.input.focus();
+  };
+
+  hide = () => {
+    this.input.value = '';
+    this.widget.style.display = 'none';
+  };
 }
