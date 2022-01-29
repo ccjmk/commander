@@ -1,7 +1,7 @@
-import { Handler } from './commandsHandler';
+import CommandHandler from './CommandHandler';
 
 export default class Widget extends Dialog {
-  constructor(handler: Handler) {
+  constructor(handler: CommandHandler) {
     super(
       {
         title: 'FoundryCLI',

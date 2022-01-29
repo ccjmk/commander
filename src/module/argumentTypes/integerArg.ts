@@ -1,7 +1,7 @@
-import { ArgumentType } from '../argumentHandler';
+import { ArgumentType } from '../ArgumentType';
 import { ARGUMENT_TYPES } from '../constants';
 
-const numberArg: ArgumentType = {
+const integerArg: ArgumentType = {
   type: ARGUMENT_TYPES.INTEGER,
   replace: '(-?(?:[0-9]+))?',
   transform: (arg) => {
@@ -10,4 +10,4 @@ const numberArg: ArgumentType = {
     return parseInt(arg);
   },
 };
-export default numberArg;
+export default integerArg;

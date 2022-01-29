@@ -1,4 +1,4 @@
-import { ArgumentType } from '../argumentHandler';
+import { ArgumentType } from '../ArgumentType';
 import { ARGUMENT_TYPES } from '../constants';
 
 const stringArg: ArgumentType = {

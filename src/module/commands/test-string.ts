@@ -1,9 +1,9 @@
-import Command from '../commandsHandler';
+import Command from '../Command';
 import { ARGUMENT_TYPES } from '../constants';
 
-export const infoCommand: Command = {
-  name: 'info',
-  scheme: 'info $input',
+const testStringCommand: Command = {
+  name: 's',
+  scheme: 's $input',
   args: [
     {
       name: 'input',
@@ -14,3 +14,4 @@ export const infoCommand: Command = {
     ui.notifications?.info(input);
   },
 };
+export default testStringCommand;

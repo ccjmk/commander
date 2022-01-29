@@ -1,13 +1,13 @@
-import { Handler } from './commandsHandler';
+import CommandHandler from './CommandHandler';
 import { MODULE_NAME } from './constants';
-import Widget from './widget';
+import Widget from './Widget';
 
 const { ALT, CONTROL, SHIFT } = KeyboardManager.MODIFIER_KEYS;
 
-export const setKeybindings = (handler: Handler) => {
+export const setKeybindings = (handler: CommandHandler) => {
   // FIXME type this properly
   (game as any).keybindings.register(MODULE_NAME, 'openCli', {
-    name: 'Open',
+    name: 'Open', // TODO i18n this
     hint: 'Opens the Foundry CLI input.', // TODO i18n this
     namespace: MODULE_NAME,
     editable: [

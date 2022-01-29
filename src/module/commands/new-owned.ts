@@ -1,5 +1,5 @@
 import { createActor } from '../actorUtils';
-import Command from '../commandsHandler';
+import Command from '../Command';
 import { ARGUMENT_TYPES } from '../constants';
 
 const newOwnedCommand: Command = {
@@ -34,3 +34,4 @@ const newOwnedCommand: Command = {
     }
   },
 };
+export default newOwnedCommand;

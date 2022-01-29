@@ -1,4 +1,4 @@
-import Command from '../commandsHandler';
+import Command from '../Command';
 import { ARGUMENT_TYPES } from '../constants';
 
 const sheetByNameCommand: Command = {
@@ -21,3 +21,4 @@ const sheetByNameCommand: Command = {
     }
   },
 };
+export default sheetByNameCommand;

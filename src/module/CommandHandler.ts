@@ -1,27 +1,27 @@
-import { argumentMap } from './argumentHandler';
+import { ArgumentType } from './ArgumentType';
+import integerArg from './argumentTypes/integerArg';
+import numberArg from './argumentTypes/numberArg';
+import quotedStringArg from './argumentTypes/quotedStringArg';
+import stringArg from './argumentTypes/stringArg';
+import Command from './Command';
 import { ARGUMENT_TYPES, MODULE_NAME } from './constants';
 
-export default interface Command {
-  name: string;
-  description?: string;
-  scheme: string;
-  args: Array<Argument>;
-  handler: (...params: any) => any;
-}
+const argumentMap = new Map<ARGUMENT_TYPES, ArgumentType>();
+argumentMap.set(ARGUMENT_TYPES.NUMBER, numberArg);
+argumentMap.set(ARGUMENT_TYPES.INTEGER, integerArg);
+argumentMap.set(ARGUMENT_TYPES.STRING, stringArg);
+argumentMap.set(ARGUMENT_TYPES.QUOTED_STRING, quotedStringArg);
 
-interface Argument {
-  name: string;
-  type: ARGUMENT_TYPES;
-}
-
-export class Handler {
+export default class CommandHandler {
   commandMap;
 
   constructor() {
     this.commandMap = new Map<string, Command>();
   }
 
-  commands = () => [...this.commandMap.values()];
+  get commands() {
+    return this.commandMap;
+  }
 
   execute = async (input: string) => {
     //check all commands
@@ -50,25 +50,27 @@ export class Handler {
     ui.notifications?.warn('No matching command found'); // TODO i18n this
   };
 
-  register = (c: any, replace?: boolean) => {
+  register = (command: any, replace?: boolean) => {
     if (
-      missingMandatoryField(c.name, 'name') ||
-      missingMandatoryField(c.scheme, 'scheme') ||
-      missingMandatoryArray(c.args, 'args')
+      missingMandatoryField(command.name, 'name') ||
+      missingMandatoryField(command.scheme, 'scheme') ||
+      missingMandatoryArray(command.args, 'args')
     )
       return;
-    if (this.commandMap.get(c.name) && !replace) {
-      ui.notifications?.error(`Command '${c.name}' already exists`); // TODO i18n this
+    if (this.commandMap.get(command.name) && !replace) {
+      ui.notifications?.error(`Command '${command.name}' already exists`); // TODO i18n this
       return;
     }
-    if (typeof c.handler !== 'function') {
-      ui.notifications?.error(`Unable to register command with incorrect data - '${c.handler}' must be a function`); // TODO i18n this
+    if (typeof command.handler !== 'function') {
+      ui.notifications?.error(
+        `Unable to register command with incorrect data - '${command.handler}' must be a function`,
+      ); // TODO i18n this
       return;
     }
-    for (const arg of c.args) {
+    for (const arg of command.args) {
       if (invalidArgument(arg)) return;
     }
-    this.commandMap.set(c.name, c);
+    this.commandMap.set(command.name, command);
   };
 }
 

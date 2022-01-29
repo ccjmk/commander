@@ -8,18 +8,31 @@ import { registerSettings } from './settingsConfig';
 import { preloadTemplates } from './preloadTemplates';
 import { MODULE_NAME } from './constants';
 import { setKeybindings } from './keybindingConfig';
-import { Handler } from './commandsHandler';
-import { infoCommand } from './commands/info';
+import CommandHandler from './CommandHandler';
+import testStringCommand from './commands/test-string';
+import newCommand from './commands/new';
+import newOwnedCommand from './commands/new-owned';
+import sheetByNameCommand from './commands/sheet-player';
+import sheetByPlayerCommand from './commands/sheet-name';
+import testQuotedCommand from './commands/test-quoted';
+import testNumberCommand from './commands/test-number';
+import testIntegerCommand from './commands/test-integer';
 
-let handler: Handler;
+let handler: CommandHandler;
 
 // Initialize module
 Hooks.once('init', async () => {
   console.log(`${MODULE_NAME} | Initializing foundry-cli`);
-  handler = new Handler();
-  handler.register(infoCommand);
 
-  // Assign custom classes and constants here
+  handler = new CommandHandler();
+  handler.register(testStringCommand);
+  handler.register(testQuotedCommand);
+  handler.register(testNumberCommand);
+  handler.register(testIntegerCommand);
+  handler.register(newCommand);
+  handler.register(newOwnedCommand);
+  handler.register(sheetByNameCommand);
+  handler.register(sheetByPlayerCommand);
 
   // Register custom module settings
   registerSettings();
@@ -31,16 +44,17 @@ Hooks.once('init', async () => {
 // Setup module
 Hooks.once('setup', async () => {
   setKeybindings(handler);
+
+  (window as any).cli = {
+    commands: handler.commands,
+    register: handler.register,
+    execute: handler.execute,
+  };
 });
 
 // When ready
 Hooks.once('ready', async () => {
   // Add CLI public api
-  (window as any).cli = {
-    register: handler.register,
-    commands: handler.commands,
-    execute: handler.execute,
-  };
 });
 
 // Add any additional hooks if necessary
