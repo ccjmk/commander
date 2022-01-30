@@ -20,12 +20,17 @@ export default class Widget {
     this.input = document.getElementById('commander-input') as HTMLInputElement;
     this.input.addEventListener('keyup', (ev) => {
       const commandInput = (ev.target as HTMLInputElement).value;
-      if (ev.code !== 'Enter') {
-        this.showSuggestions(this.handler.suggestCommand(commandInput));
+      if (ev.code === 'Tab') {
+        // TODO handle tab?
+      }
+      if (ev.code === 'Enter') {
+        this.handler.execute(commandInput);
+        this.hide();
         return;
       }
-      this.handler.execute(commandInput);
-      this.hide();
+      const firstSpace = commandInput.indexOf(' ');
+      const command = firstSpace < 1 ? commandInput : commandInput.substring(0, firstSpace);
+      this.showSuggestions(this.handler.suggestCommand(command));
     });
 
     this.input.addEventListener('click', (ev) => {

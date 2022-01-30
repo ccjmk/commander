@@ -21,7 +21,11 @@ const newOwnedCommand: Command = {
   ],
   handler: async ({ entity, name, owner }) => {
     const ownerUser = getGame().users!.getName(owner);
-    if (!ownerUser) throw new Error('Owner does not exist');
+    if (!ownerUser) {
+      const msg = 'Owner does not exist';
+      ui.notifications?.error(msg);
+      throw new Error(msg);
+    }
     switch (entity) {
       case 'actor':
         await createActor(name, ownerUser.id);

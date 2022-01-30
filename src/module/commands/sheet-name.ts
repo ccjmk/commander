@@ -13,7 +13,11 @@ const sheetByPlayerCommand: Command = {
   ],
   handler: ({ player }) => {
     const sheet = getGame().users!.getName(player)?.character?.sheet;
-    if (!sheet) throw new Error(`Player "${player}" undefined`);
+    if (!sheet) {
+      const msg = `Player "${player}" undefined`;
+      ui.notifications?.error(msg);
+      throw new Error(msg);
+    }
 
     if ((sheet as any)._state < 1) {
       sheet.render(true);

@@ -8,6 +8,7 @@
     },
     "Handler": {
       "Exec": {
+        "DebugRegex": "Regex for {commandName} ([ ] not part of regex): [{regex}]",
         "DebugRunningWithArgs": "Executing '{commandName}' with args: {paramObj}`",
         "NoMatchingCommand": "No matching command found",
         "ArgumentsDontMatch": "Arguments don't match for command {commandName}"

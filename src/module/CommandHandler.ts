@@ -31,6 +31,7 @@ export default class CommandHandler {
   };
 
   execute = async (input: string) => {
+    const debugMode = getGame().settings.get(MODULE_NAME.toLowerCase(), 'debug');
     const command = this.getCommand(input);
     if (!command) {
       ui.notifications?.warn(localize('Handler.Exec.NoMatchingCommand'));
@@ -38,6 +39,15 @@ export default class CommandHandler {
     }
 
     const reg = this.regexCache.get(command)!; // TODO notify error if not existant ?
+    if (debugMode) {
+      console.log(
+        `${MODULE_NAME} | ` +
+          localize('Handler.Exec.DebugRegex', {
+            commandName: command.name,
+            regex: reg,
+          }),
+      );
+    }
     const regexp = new RegExp(reg, 'ui');
     const match = input.match(regexp);
     if (match) {
@@ -48,7 +58,7 @@ export default class CommandHandler {
         if (!iArgType) throw new Error();
         paramObj[command.args[i].name] = argumentMap.get(iArgType)?.transform(match[i]);
       }
-      if (getGame().settings.get(MODULE_NAME.toLowerCase(), 'debug')) {
+      if (debugMode) {
         console.log(
           `${MODULE_NAME} | ` +
             localize('Handler.Exec.DebugRunningWithArgs', {

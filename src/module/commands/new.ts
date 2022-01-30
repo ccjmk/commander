@@ -20,8 +20,11 @@ const newCommand: Command = {
       case 'actor':
         await createActor(name);
         break;
+      //TODO other entity types
       default:
-        ui.notifications?.error('Unrecognized entity type');
+        const msg = 'Unrecognized entity type';
+        ui.notifications?.error(msg);
+        throw new Error(msg);
     }
   },
 };
