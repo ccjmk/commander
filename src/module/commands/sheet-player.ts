@@ -8,7 +8,7 @@ const sheetByNameCommand: Command = {
   args: [
     {
       name: 'player',
-      type: ARGUMENT_TYPES.QUOTED_STRING,
+      type: ARGUMENT_TYPES.STRING,
     },
   ],
   handler: ({ player }) => {

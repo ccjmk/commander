@@ -1,15 +1,15 @@
 {
   "private": true,
-  "name": "foundry-cli",
-  "description": "Command Line Interface for manipulating entities.",
+  "name": "commander",
+  "description": "Command launcher for running and registering commands executable solely by keyboard",
   "license": "MIT",
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ccjmk/foundry-cli"
+    "url": "https://github.com/ccjmk/commander"
   },
   "bugs": {
-    "url": "https://github.com/ccjmk/foundry-cli/issues"
+    "url": "https://github.com/ccjmk/commander/issues"
   },
   "contributors": [
     {

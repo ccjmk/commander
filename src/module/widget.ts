@@ -1,7 +1,7 @@
 import CommandHandler from './CommandHandler';
 import { MODULE_NAME } from './constants';
 
-export class Widget {
+export default class Widget {
   constructor(private readonly handler: CommandHandler) {
     this.handler = handler;
   }
@@ -16,7 +16,7 @@ export class Widget {
     this.widget = html.body.firstElementChild as HTMLDivElement;
     document.body.append(this.widget);
 
-    this.input = document.getElementById('fcli-input') as HTMLInputElement;
+    this.input = document.getElementById('commander-input') as HTMLInputElement;
     this.input.addEventListener('keyup', (ev) => {
       if (ev.code !== 'Enter') return;
       const command = (ev.target as HTMLInputElement).value;
@@ -27,12 +27,12 @@ export class Widget {
     this.input.addEventListener('click', (ev) => {
       ev.stopPropagation();
     });
-    const suggestions = document.getElementById('fcli-suggestion') as HTMLElement;
+    const suggestions = document.getElementById('commander-suggestion') as HTMLElement;
     suggestions.addEventListener('click', (ev) => {
       ev.stopPropagation();
     });
 
-    const div = document.getElementById('foundry-cli') as HTMLElement;
+    const div = document.getElementById('commander') as HTMLElement;
     div.addEventListener('click', (ev) => {
       this.hide();
     });

@@ -1,6 +1,9 @@
-# foundry-cli
+# Commander
 
-Please add your description here.
+Hooks.callAll("commanderReady"
+window.commander { commands, register, execute }
+
+
 
 ## Installation
 

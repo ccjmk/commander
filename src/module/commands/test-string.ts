@@ -2,16 +2,16 @@ import Command from '../Command';
 import { ARGUMENT_TYPES } from '../constants';
 
 const testStringCommand: Command = {
-  name: 's',
-  scheme: 's $input',
+  name: 'str',
+  scheme: 'str $text',
   args: [
     {
-      name: 'input',
+      name: 'text',
       type: ARGUMENT_TYPES.STRING,
     },
   ],
-  handler: ({ input }) => {
-    ui.notifications?.info(input);
+  handler: ({ text }) => {
+    ui.notifications?.info(`[${text}]`);
   },
 };
 export default testStringCommand;

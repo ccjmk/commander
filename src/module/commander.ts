@@ -1,5 +1,5 @@
 /**
- * Author: Iñaki "ccjmk" Guastalli
+ * Authors: Iñaki "ccjmk" Guastalli, Miguel Galante
  * Content License: See CONTENT-LICENSE
  * Software License: See LICENSE
  */
@@ -13,22 +13,23 @@ import newCommand from './commands/new';
 import newOwnedCommand from './commands/new-owned';
 import sheetByNameCommand from './commands/sheet-player';
 import sheetByPlayerCommand from './commands/sheet-name';
-import testQuotedCommand from './commands/test-quoted';
 import testNumberCommand from './commands/test-number';
-import testIntegerCommand from './commands/test-integer';
-import { Widget } from './Widget';
+import Widget from './Widget';
+import testBooleanCommand from './commands/test-boolean';
+import testRawCommand from './commands/test-raw';
 
 let widget: Widget;
 
 // Initialize module
 Hooks.once('init', async () => {
-  console.log(`${MODULE_NAME} | Initializing foundry-cli`);
+  console.log(`${MODULE_NAME} | Initializing..`);
 
   const handler = new CommandHandler();
   handler.register(testStringCommand);
-  handler.register(testQuotedCommand);
   handler.register(testNumberCommand);
-  handler.register(testIntegerCommand);
+  handler.register(testBooleanCommand);
+  handler.register(testRawCommand);
+
   handler.register(newCommand);
   handler.register(newOwnedCommand);
   handler.register(sheetByNameCommand);
@@ -42,18 +43,11 @@ Hooks.once('init', async () => {
   registerSettings();
 
   const { commands, register, execute } = handler;
-  (window as any).cli = { commands, register, execute };
-});
-
-// Setup module
-Hooks.once('setup', async () => {
+  (window as any).commander = { commands, register, execute };
   setKeybindings(widget.show);
-  // TODO ver si se puede registar un hook cuando el modulo esta cargado
 });
 
 // When ready
 Hooks.once('ready', async () => {
-  // Add CLI public api
+  Hooks.callAll('commanderReady', (window as any).commander);
 });
-
-// Add any additional hooks if necessary

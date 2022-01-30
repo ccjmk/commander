@@ -2,16 +2,16 @@ import Command from '../Command';
 import { ARGUMENT_TYPES } from '../constants';
 
 const testNumberCommand: Command = {
-  name: 'n',
-  scheme: 'n $input',
+  name: 'num',
+  scheme: 'num $number',
   args: [
     {
-      name: 'input',
+      name: 'number',
       type: ARGUMENT_TYPES.NUMBER,
     },
   ],
-  handler: ({ input }) => {
-    ui.notifications?.info(input);
+  handler: ({ number }) => {
+    ui.notifications?.info(`[${number}]`);
   },
 };
 export default testNumberCommand;

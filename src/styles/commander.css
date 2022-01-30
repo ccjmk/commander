@@ -2,7 +2,7 @@
 /*                 CSS                  */
 /*         Add your styles here         */
 /* ------------------------------------ */
-.fcli-shade {
+.commander-shade {
   position: fixed;
   z-index: 999;
   width: 100%;
@@ -10,14 +10,14 @@
   background: rgba(0, 0, 0, 0.4);
 }
 
-.fcli-modal {
+.commander-modal {
   top: 50%;
   left: 30%;
   right: 30%;
   position: absolute;
 }
 
-.fcli-modal .fcli-modal-suggestion {
+.commander-modal .commander-modal-suggestion {
   font-size: medium;
   border-radius: 5px;
   padding: 0 10px;
@@ -27,13 +27,13 @@
   color: white;
 }
 
-.fcli-modal .fcli-modal-content {
+.commander-modal .commander-modal-content {
   padding: 5px;
   border-radius: 5px;
   background-image: url(../../../ui/parchment.jpg);
 }
 
-.fcli-modal .fcli-modal-input {
+.commander-modal .commander-modal-input {
   font-size: large;
   border: none;
   background: none;

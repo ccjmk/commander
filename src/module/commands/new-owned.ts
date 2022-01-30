@@ -12,11 +12,11 @@ const newOwnedCommand: Command = {
     },
     {
       name: 'name',
-      type: ARGUMENT_TYPES.QUOTED_STRING,
+      type: ARGUMENT_TYPES.STRING,
     },
     {
       name: 'owner',
-      type: ARGUMENT_TYPES.QUOTED_STRING,
+      type: ARGUMENT_TYPES.STRING,
     },
   ],
   handler: async ({ entity, name, owner }) => {
