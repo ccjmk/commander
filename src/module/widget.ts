@@ -18,19 +18,26 @@ export default class Widget {
     document.body.append(this.widget);
 
     this.input = document.getElementById('commander-input') as HTMLInputElement;
+    this.input.addEventListener('keydown', (ev) => {
+      if (ev.code === 'Tab') ev.preventDefault();
+    });
     this.input.addEventListener('keyup', (ev) => {
+      // need keyUP to have the latest key registered
       const commandInput = (ev.target as HTMLInputElement).value;
+      const firstSpace = commandInput.indexOf(' ');
+      const command = firstSpace < 1 ? commandInput : commandInput.substring(0, firstSpace);
+      const suggestions = this.handler.suggestCommand(command);
       if (ev.code === 'Tab') {
-        // TODO handle tab?
+        if (suggestions?.length === 1) {
+          this.input.value = suggestions[0] + ' ';
+        }
       }
       if (ev.code === 'Enter') {
         this.handler.execute(commandInput);
         this.hide();
         return;
       }
-      const firstSpace = commandInput.indexOf(' ');
-      const command = firstSpace < 1 ? commandInput : commandInput.substring(0, firstSpace);
-      this.showSuggestions(this.handler.suggestCommand(command));
+      this.showSuggestions(suggestions);
     });
 
     this.input.addEventListener('click', (ev) => {
