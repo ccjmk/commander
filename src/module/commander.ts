@@ -14,9 +14,10 @@ import newOwnedCommand from './commands/new-owned';
 import sheetByNameCommand from './commands/sheet-player';
 import sheetByPlayerCommand from './commands/sheet-name';
 import testNumberCommand from './commands/test-number';
-import Widget from './Widget';
+import Widget from './widget';
 import testBooleanCommand from './commands/test-boolean';
 import testRawCommand from './commands/test-raw';
+import testAllCommand from './commands/test-all';
 
 let widget: Widget;
 
@@ -29,6 +30,7 @@ Hooks.once('init', async () => {
   handler.register(testNumberCommand);
   handler.register(testBooleanCommand);
   handler.register(testRawCommand);
+  handler.register(testAllCommand);
 
   handler.register(newCommand);
   handler.register(newOwnedCommand);
@@ -37,7 +39,6 @@ Hooks.once('init', async () => {
 
   widget = new Widget(handler);
   await widget.render();
-  // TODO ver si puede ir todo en el 'init'
 
   // Register custom module settings
   registerSettings();

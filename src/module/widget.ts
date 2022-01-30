@@ -8,6 +8,7 @@ export default class Widget {
 
   private widget!: HTMLDivElement;
   private input!: HTMLInputElement;
+  private suggestions!: HTMLDivElement;
 
   render = async () => {
     const template = await renderTemplate(`modules/${MODULE_NAME}/templates/widget.html`, {});
@@ -18,17 +19,20 @@ export default class Widget {
 
     this.input = document.getElementById('commander-input') as HTMLInputElement;
     this.input.addEventListener('keyup', (ev) => {
-      if (ev.code !== 'Enter') return;
-      const command = (ev.target as HTMLInputElement).value;
-      this.handler.execute(command);
+      const commandInput = (ev.target as HTMLInputElement).value;
+      if (ev.code !== 'Enter') {
+        this.showSuggestions(this.handler.suggestCommand(commandInput));
+        return;
+      }
+      this.handler.execute(commandInput);
       this.hide();
     });
 
     this.input.addEventListener('click', (ev) => {
       ev.stopPropagation();
     });
-    const suggestions = document.getElementById('commander-suggestion') as HTMLElement;
-    suggestions.addEventListener('click', (ev) => {
+    this.suggestions = document.getElementById('commander-suggestions') as HTMLDivElement;
+    this.suggestions.addEventListener('click', (ev) => {
       ev.stopPropagation();
     });
 
@@ -37,7 +41,7 @@ export default class Widget {
       this.hide();
     });
     document.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Escape') {
+      if (ev.code === 'Escape') {
         this.hide();
       }
     });
@@ -51,6 +55,40 @@ export default class Widget {
 
   hide = () => {
     this.input.value = '';
+    this.suggestions.innerText = '';
+    this.suggestions.style.display = 'none';
     this.widget.style.display = 'none';
+  };
+
+  showSuggestions = (suggs?: string[]) => {
+    if (!suggs) {
+      this.suggestions.style.display = 'none';
+      return;
+    }
+    let newSuggs: HTMLDivElement[] = [];
+    if (suggs.length === 1) {
+      const command = this.handler.commands.get(suggs[0])!;
+      const div = document.createElement('div');
+      div.className = 'commander-suggestion';
+      let scheme = `<div>${command.scheme}</div>`;
+      command.args.forEach((a) => {
+        scheme = scheme.replace('$' + a.name, `<span class="commander-suggestion-${a.type}">$${a.name}</span>`);
+      });
+      $(scheme).appendTo(div);
+      newSuggs.push(div);
+    } else {
+      if (suggs.length === 0) {
+        suggs = ['No matching commands found'];
+      }
+      newSuggs = suggs.map((s) => {
+        const div = document.createElement('div');
+        div.className = 'commander-suggestion';
+        div.innerText = s;
+        return div;
+      });
+    }
+
+    this.suggestions.replaceChildren(...newSuggs);
+    this.suggestions.style.display = 'flex';
   };
 }

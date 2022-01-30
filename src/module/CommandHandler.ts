@@ -13,9 +13,8 @@ argumentMap.set(ARGUMENT_TYPES.BOOLEAN, booleanArg);
 argumentMap.set(ARGUMENT_TYPES.RAW, rawArg);
 
 export default class CommandHandler {
-  commandMap;
-
-  regexCache = new WeakMap<Command, string>();
+  private commandMap;
+  private regexCache = new WeakMap<Command, string>();
 
   constructor() {
     this.commandMap = new Map<string, Command>();
@@ -24,6 +23,11 @@ export default class CommandHandler {
   get commands() {
     return this.commandMap;
   }
+
+  suggestCommand = (input: string): string[] | undefined => {
+    if (!input) return undefined;
+    return [...this.commandMap.keys()].filter((c) => c.startsWith(input.replace(/$.*/, '')));
+  };
 
   execute = async (input: string) => {
     const command = this.getCommand(input);

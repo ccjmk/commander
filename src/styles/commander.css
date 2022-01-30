@@ -1,7 +1,3 @@
-/* ------------------------------------ */
-/*                 CSS                  */
-/*         Add your styles here         */
-/* ------------------------------------ */
 .commander-shade {
   position: fixed;
   z-index: 999;
@@ -17,24 +13,48 @@
   position: absolute;
 }
 
-.commander-modal .commander-modal-suggestion {
-  font-size: medium;
+.commander-modal .commander-suggestions {
+  margin-left: 10px;
+  display: flex;
+  width: fit-content;
+  position: absolute;
+  top: -25px;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion {
+  font-size: large;
   border-radius: 5px;
   padding: 0 10px;
-  margin-left: 10px;
   width: fit-content;
   background: url(../../../ui/denim075.png) repeat;
   color: white;
+  margin-right: 5px;
 }
 
-.commander-modal .commander-modal-content {
-  padding: 5px;
+.commander-modal .commander-suggestions .commander-suggestion-boolean {
+  color: gold;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion-number {
+  color: lightcoral;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion-string {
+  color: cornflowerblue;
+}
+
+.commander-modal .commander-suggestions .commander-suggestion-raw {
+  color: greenyellow;
+}
+
+.commander-modal .commander-content {
+  padding: 10px;
   border-radius: 5px;
   background-image: url(../../../ui/parchment.jpg);
 }
 
-.commander-modal .commander-modal-input {
-  font-size: large;
+.commander-modal .commander-content .commander-input {
+  font-size: x-large;
   border: none;
   background: none;
 }
