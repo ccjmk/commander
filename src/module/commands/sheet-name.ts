@@ -1,5 +1,5 @@
 import Command from '../Command';
-import { ARGUMENT_TYPES } from '../constants';
+import { ARGUMENT_TYPES, getGame } from '../utils';
 
 const sheetByPlayerCommand: Command = {
   name: 'sheet:name',
@@ -12,9 +12,10 @@ const sheetByPlayerCommand: Command = {
     },
   ],
   handler: ({ player }) => {
-    const sheet = (game as any).users.getName(player).character.sheet; // FIXME type this
+    const sheet = getGame().users!.getName(player)?.character?.sheet;
+    if (!sheet) throw new Error(`Player "${player}" undefined`);
 
-    if (sheet._state < 1) {
+    if ((sheet as any)._state < 1) {
       sheet.render(true);
     } else {
       sheet.close();

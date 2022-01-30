@@ -1,5 +1,5 @@
 import Command from '../Command';
-import { ARGUMENT_TYPES } from '../constants';
+import { ARGUMENT_TYPES } from '../utils';
 
 const testStringCommand: Command = {
   name: 'str',

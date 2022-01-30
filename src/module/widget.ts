@@ -1,5 +1,5 @@
 import CommandHandler from './CommandHandler';
-import { MODULE_NAME } from './constants';
+import { MODULE_NAME, localize } from './utils';
 
 export default class Widget {
   constructor(private readonly handler: CommandHandler) {
@@ -49,6 +49,7 @@ export default class Widget {
 
   show = () => {
     this.input.value = '';
+    this.getInputPlaceholder();
     this.widget.style.display = 'block';
     this.input.focus();
   };
@@ -91,4 +92,10 @@ export default class Widget {
     this.suggestions.replaceChildren(...newSuggs);
     this.suggestions.style.display = 'flex';
   };
+
+  getInputPlaceholder() {
+    const maxPlaceholder = parseInt(localize('Widget.PlaceholderMax'));
+    const n = Math.floor(Math.random() * maxPlaceholder) + 1; // random int
+    this.input.placeholder = localize(`Widget.Placeholder${n}`);
+  }
 }

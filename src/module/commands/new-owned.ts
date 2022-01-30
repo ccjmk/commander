@@ -1,6 +1,6 @@
 import { createActor } from '../actorUtils';
 import Command from '../Command';
-import { ARGUMENT_TYPES } from '../constants';
+import { ARGUMENT_TYPES, getGame } from '../utils';
 
 const newOwnedCommand: Command = {
   name: 'new:owned',
@@ -20,11 +20,8 @@ const newOwnedCommand: Command = {
     },
   ],
   handler: async ({ entity, name, owner }) => {
-    const ownerUser = (game as any).users.getName(owner); // FIXME type this
-    if (!ownerUser) {
-      ui.notifications?.error('Owner does not exist');
-      return;
-    }
+    const ownerUser = getGame().users!.getName(owner);
+    if (!ownerUser) throw new Error('Owner does not exist');
     switch (entity) {
       case 'actor':
         await createActor(name, ownerUser.id);

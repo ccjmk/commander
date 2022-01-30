@@ -1,12 +1,11 @@
-import { MODULE_NAME } from './constants';
+import { MODULE_NAME, getGame, localize } from './utils';
 
 const { ALT, CONTROL, SHIFT } = KeyboardManager.MODIFIER_KEYS;
 
 export const setKeybindings = (onDown: () => void) => {
-  // FIXME type this properly
-  (game as any).keybindings.register(MODULE_NAME, 'openCommander', {
-    name: 'Open', // TODO i18n this
-    hint: 'Opens the Commander window', // TODO i18n this
+  getGame().keybindings.register(MODULE_NAME, 'openCommander', {
+    name: localize('Keybindings.Name'),
+    hint: localize('Keybindings.Hint'),
     namespace: MODULE_NAME,
     editable: [
       {

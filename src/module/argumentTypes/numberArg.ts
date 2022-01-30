@@ -1,5 +1,5 @@
 import { ArgumentType } from '../ArgumentType';
-import { ARGUMENT_TYPES } from '../constants';
+import { ARGUMENT_TYPES } from '../utils';
 
 const numberArg: ArgumentType = {
   type: ARGUMENT_TYPES.NUMBER,

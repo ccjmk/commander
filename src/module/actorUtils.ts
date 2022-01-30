@@ -1,5 +1,6 @@
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
-import { MYSTERY_MAN } from './constants';
+
+const MYSTERY_MAN = 'icons/svg/mystery-man.svg';
 
 export const createActor = async (name: string, ownerId?: string) => {
   const actorData: ActorDataConstructorData = {

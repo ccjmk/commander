@@ -1,4 +1,4 @@
-import { ARGUMENT_TYPES } from './constants';
+import { ARGUMENT_TYPES } from './utils';
 
 export type Argument = {
   name: string;

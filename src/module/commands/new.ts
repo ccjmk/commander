@@ -1,6 +1,6 @@
 import { createActor } from '../actorUtils';
 import Command from '../Command';
-import { ARGUMENT_TYPES } from '../constants';
+import { ARGUMENT_TYPES } from '../utils';
 
 const newCommand: Command = {
   name: 'new',

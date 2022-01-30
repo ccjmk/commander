@@ -5,7 +5,6 @@
  */
 
 import { registerSettings } from './settingsConfig';
-import { MODULE_NAME } from './constants';
 import { setKeybindings } from './keybindingConfig';
 import CommandHandler from './CommandHandler';
 import testStringCommand from './commands/test-string';
@@ -18,6 +17,7 @@ import Widget from './widget';
 import testBooleanCommand from './commands/test-boolean';
 import testRawCommand from './commands/test-raw';
 import testAllCommand from './commands/test-all';
+import { MODULE_NAME } from './utils';
 
 let widget: Widget;
 
@@ -40,11 +40,12 @@ Hooks.once('init', async () => {
   widget = new Widget(handler);
   await widget.render();
 
-  // Register custom module settings
-  registerSettings();
-
   const { commands, register, execute } = handler;
   (window as any).commander = { commands, register, execute };
+});
+
+Hooks.once('setup', async () => {
+  registerSettings();
   setKeybindings(widget.show);
 });
 

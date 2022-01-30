@@ -4,7 +4,8 @@ import numberArg from './argumentTypes/numberArg';
 import rawArg from './argumentTypes/rawArg';
 import stringArg from './argumentTypes/stringArg';
 import Command, { Argument } from './Command';
-import { ARGUMENT_TYPES, MODULE_NAME } from './constants';
+import { MODULE_NAME } from './utils';
+import { ARGUMENT_TYPES, getGame, localize } from './utils';
 
 const argumentMap = new Map<ARGUMENT_TYPES, ArgumentType>();
 argumentMap.set(ARGUMENT_TYPES.NUMBER, numberArg);
@@ -32,7 +33,7 @@ export default class CommandHandler {
   execute = async (input: string) => {
     const command = this.getCommand(input);
     if (!command) {
-      ui.notifications?.warn(`No matching command found`); // TODO i18n this
+      ui.notifications?.warn(localize('Handler.Exec.NoMatchingCommand'));
       return;
     }
 
@@ -47,16 +48,24 @@ export default class CommandHandler {
         if (!iArgType) throw new Error();
         paramObj[command.args[i].name] = argumentMap.get(iArgType)?.transform(match[i]);
       }
-      console.debug(`${MODULE_NAME} | Executing '${command.name}' with args: ${paramObj}`); // TODO bind to debug setting
+      if (getGame().settings.get(MODULE_NAME.toLowerCase(), 'debug')) {
+        console.log(
+          `${MODULE_NAME} | ` +
+            localize('Handler.Exec.DebugRunningWithArgs', {
+              commandName: command.name,
+              paramObj: JSON.stringify(paramObj),
+            }),
+        );
+      }
       return await command.handler(paramObj);
     }
-    ui.notifications?.warn(`Arguments don't match for command ${command.name}`); // TODO i18n this
+    ui.notifications?.warn(localize('Handler.Exec.ArgumentsDontMatch', { commandName: command.name }));
   };
 
   register = (command: unknown, replace?: boolean) => {
     if (!isValidCommand(command)) return;
     if (this.commandMap.get(command.name) && !replace) {
-      throw new Error(`Command '${command.name}' already exists`); // TODO i18n this
+      throw new Error(localize('Handler.Reg.CommandAlreadyExists'));
     }
     this.regexCache.set(command, buildRegex(command.scheme, command.args));
     this.commandMap.set(command.name, command);
@@ -93,13 +102,13 @@ const isValidStringField = (field: any, fieldName: string) => {
     field === null ||
     ((typeof field === 'string' || field instanceof String) && field.length === 0)
   ) {
-    throw new Error(`Unable to register command with incorrect data - '${fieldName}' required`); // TODO i18n this
+    throw new Error(localize('Handler.Reg.WrongString', { fieldName }));
   }
 };
 
 function isArgumentArray(args: any): args is Array<Argument> {
   if (args === undefined || args === null || !Array.isArray(args)) {
-    throw new Error(`Unable to register command with incorrect data - array 'args' required`); // TODO i18n this
+    throw new Error(localize('Handler.Reg.WrongArray'));
   }
   for (const arg of args) {
     isValidArgument(arg);
@@ -111,18 +120,14 @@ function isValidArgument(arg: any): arg is Argument {
   isValidStringField(arg.name, 'arg.name');
   isValidStringField(arg.type, 'arg.type');
   if (!Object.values(ARGUMENT_TYPES).includes(arg.type)) {
-    throw new Error(
-      `Unable to register command with incorrect data - type is not a supported argument type ${Object.values(
-        ARGUMENT_TYPES,
-      )}`,
-    ); // TODO i18n this
+    throw new Error(localize('Handler.Reg.WrongArgument', { argTypes: Object.values(ARGUMENT_TYPES) }));
   }
   return true;
 }
 
 function isValidHandler(handler: any) {
   if (typeof handler !== 'function') {
-    throw new Error(`Unable to register command with incorrect data - 'command.handler' must be a function`); // TODO i18n this
+    throw new Error(localize('Handler.Reg.WrongHandler'));
   }
   // TODO somehow check that the handler has the correct arguments (no more, no less)?
 }
