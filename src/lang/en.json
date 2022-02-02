@@ -1,9 +1,14 @@
 {
-  "COMMANDER": {
+  "CMD": {
     "Settings": {
       "DebugMode": {
         "Name": "Enable debug mode",
-        "Hint": "Logs into console a much finer detail of commands getting registered and executed"
+        "Hint": "Logs into console a much finer detail of commands getting registered and executed",
+        "Log": "Debug mode [{value}]"
+      },
+      "OnlyGM": {
+        "Name": "Restrict to GM only",
+        "Hint": "Overrides command permissions to only the Gamemaster can run commands"
       }
     },
     "Handler": {
