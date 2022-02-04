@@ -5,10 +5,6 @@ const rawArg: ArgumentType = {
   type: ARGUMENT_TYPES.RAW,
   replace: ' *?(.*)',
   last: true,
-  transform: (arg) => {
-    console.log('on boolean transform'); // FIXME remove this
-    console.log(arg);
-    return arg;
-  },
+  transform: (arg) => arg,
 };
 export default rawArg;
