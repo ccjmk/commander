@@ -4,6 +4,7 @@ import numberArg from './argumentTypes/numberArg';
 import rawArg from './argumentTypes/rawArg';
 import stringArg from './argumentTypes/stringArg';
 import Command, { Argument } from './Command';
+import { getSetting, SETTING } from './settingsConfig';
 import { MODULE_ID, MODULE_NAME } from './utils';
 import { ARGUMENT_TYPES, getGame, localize } from './utils';
 
@@ -31,7 +32,7 @@ export default class CommandHandler {
   };
 
   execute = async (input: string) => {
-    const debugMode = getGame().settings.get(MODULE_ID, 'debug');
+    const debugMode = getSetting(SETTING.DEBUG);
     const command = this.getCommand(input);
     if (!command) {
       ui.notifications?.warn(localize('Handler.Exec.NoMatchingCommand'));
@@ -77,7 +78,7 @@ export default class CommandHandler {
     if (this.commandMap.get(command.name) && !replace) {
       throw new Error(localize('Handler.Reg.CommandAlreadyExists'));
     }
-    this.regexCache.set(command, buildRegex(command.scheme, command.args));
+    this.regexCache.set(command, buildRegex(command.schema, command.args));
     this.commandMap.set(command.name, command);
   };
 
@@ -88,8 +89,8 @@ export default class CommandHandler {
   }
 }
 
-function buildRegex(scheme: Command['scheme'], args: Command['args']) {
-  let reg = scheme;
+function buildRegex(schema: Command['schema'], args: Command['args']) {
+  let reg = schema;
   for (const arg of args) {
     const argumentType = argumentMap.get(arg.type)!;
     reg = reg.replace('$' + arg.name, argumentType.replace);
@@ -99,7 +100,7 @@ function buildRegex(scheme: Command['scheme'], args: Command['args']) {
 
 function isValidCommand(command: any): command is Command {
   isValidStringField(command.name, 'name');
-  isValidStringField(command.scheme, 'scheme');
+  isValidStringField(command.schema, 'schema');
   isArgumentArray(command.args);
   isValidHandler(command.handler);
   // TODO check if raw argument is last on schema ?

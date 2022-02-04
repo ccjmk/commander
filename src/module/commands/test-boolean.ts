@@ -3,13 +3,14 @@ import { ARGUMENT_TYPES } from '../utils';
 
 const testBooleanCommand: Command = {
   name: 'bool',
-  scheme: 'bool $bool',
+  schema: 'bool $bool',
   args: [
     {
       name: 'bool',
       type: ARGUMENT_TYPES.BOOLEAN,
     },
   ],
+  hasPermissions: () => true,
   handler: ({ bool }) => {
     ui.notifications?.info(`[${bool}]`);
   },

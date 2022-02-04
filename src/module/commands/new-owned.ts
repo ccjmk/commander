@@ -1,10 +1,11 @@
+import { BaseUser } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs';
 import { createActor } from '../actorUtils';
 import Command from '../Command';
 import { ARGUMENT_TYPES, getGame } from '../utils';
 
 const newOwnedCommand: Command = {
   name: 'new:owned',
-  scheme: 'new:owned $entity $name $owner',
+  schema: 'new:owned $entity $name $owner',
   args: [
     {
       name: 'entity',
@@ -19,6 +20,7 @@ const newOwnedCommand: Command = {
       type: ARGUMENT_TYPES.STRING,
     },
   ],
+  hasPermissions: () => true,
   handler: async ({ entity, name, owner }) => {
     const ownerUser = getGame().users!.getName(owner);
     if (!ownerUser) {

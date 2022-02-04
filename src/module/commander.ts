@@ -38,7 +38,6 @@ Hooks.once('init', async () => {
   handler.register(sheetByPlayerCommand);
 
   widget = new Widget(handler);
-  await widget.render();
 
   const { commands, register, execute } = handler;
   (window as any).commander = { commands, register, execute };
@@ -46,7 +45,7 @@ Hooks.once('init', async () => {
 
 Hooks.once('setup', async () => {
   registerSettings();
-  setKeybindings(widget.show);
+  setKeybindings(widget);
 });
 
 // When ready

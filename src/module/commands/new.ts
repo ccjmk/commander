@@ -4,7 +4,7 @@ import { ARGUMENT_TYPES } from '../utils';
 
 const newCommand: Command = {
   name: 'new',
-  scheme: 'new $entity $name',
+  schema: 'new $entity $name',
   args: [
     {
       name: 'entity',
@@ -15,6 +15,7 @@ const newCommand: Command = {
       type: ARGUMENT_TYPES.STRING,
     },
   ],
+  hasPermissions: () => true,
   handler: async ({ entity, name }) => {
     switch (entity) {
       case 'actor':

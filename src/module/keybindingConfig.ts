@@ -1,9 +1,10 @@
-import { getGame, localize, MODULE_ID } from './utils';
+import { getGame, localize, MODULE_NAME } from './utils';
+import Widget from './widget';
 
 const { ALT, CONTROL, SHIFT } = KeyboardManager.MODIFIER_KEYS;
 
-export const setKeybindings = (onDown: () => void) => {
-  getGame().keybindings.register(MODULE_ID, 'openCommander', {
+export const setKeybindings = (widget: Widget) => {
+  getGame().keybindings.register(MODULE_NAME.toLowerCase(), 'openCommander', {
     name: localize('Keybindings.Name'),
     hint: localize('Keybindings.Hint'),
     editable: [
@@ -12,7 +13,9 @@ export const setKeybindings = (onDown: () => void) => {
         modifiers: [SHIFT, CONTROL],
       },
     ],
-    onDown,
+    onDown: () => {
+      widget.render(true);
+    },
     restricted: true,
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
   });

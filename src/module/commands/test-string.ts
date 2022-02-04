@@ -3,13 +3,14 @@ import { ARGUMENT_TYPES } from '../utils';
 
 const testStringCommand: Command = {
   name: 'str',
-  scheme: 'str $text',
+  schema: 'str $text',
   args: [
     {
       name: 'text',
       type: ARGUMENT_TYPES.STRING,
     },
   ],
+  hasPermissions: () => true,
   handler: ({ text }) => {
     ui.notifications?.info(`[${text}]`);
   },

@@ -3,13 +3,14 @@ import { ARGUMENT_TYPES } from '../utils';
 
 const testRawCommand: Command = {
   name: 'raw',
-  scheme: 'raw $value',
+  schema: 'raw $value',
   args: [
     {
       name: 'value',
       type: ARGUMENT_TYPES.RAW,
     },
   ],
+  hasPermissions: () => true,
   handler: ({ value }) => {
     ui.notifications?.info(`[${value}]`);
   },

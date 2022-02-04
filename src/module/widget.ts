@@ -1,23 +1,24 @@
 import CommandHandler from './CommandHandler';
 import { MODULE_NAME, localize } from './utils';
 
-export default class Widget {
+export default class Widget extends Application {
   constructor(private readonly handler: CommandHandler) {
+    super({
+      popOut: false,
+      minimizable: false,
+      resizable: false,
+      template: `modules/${MODULE_NAME}/templates/widget.html`,
+    });
     this.handler = handler;
   }
 
-  private widget!: HTMLDivElement;
   private input!: HTMLInputElement;
   private suggestions!: HTMLDivElement;
 
-  render = async () => {
-    const template = await renderTemplate(`modules/${MODULE_NAME}/templates/widget.html`, {});
-    const parser = new DOMParser();
-    const html = parser.parseFromString(template, 'text/html');
-    this.widget = html.body.firstElementChild as HTMLDivElement;
-    document.body.append(this.widget);
-
+  activateListeners() {
     this.input = document.getElementById('commander-input') as HTMLInputElement;
+    this.setInputPlaceholder();
+
     this.input.addEventListener('keydown', (ev) => {
       if (ev.code === 'Tab') ev.preventDefault();
     });
@@ -34,7 +35,7 @@ export default class Widget {
       }
       if (ev.code === 'Enter') {
         this.handler.execute(commandInput);
-        this.hide();
+        this.close();
         return;
       }
       this.showSuggestions(suggestions);
@@ -50,28 +51,24 @@ export default class Widget {
 
     const div = document.getElementById('commander') as HTMLElement;
     div.addEventListener('click', (ev) => {
-      this.hide();
+      this.close();
     });
     document.addEventListener('keydown', (ev) => {
       if (ev.code === 'Escape') {
-        this.hide();
+        this.close();
       }
     });
-  };
-
-  show = () => {
-    this.input.value = '';
-    this.getInputPlaceholder();
-    this.widget.style.display = 'block';
     this.input.focus();
-  };
+  }
 
-  hide = () => {
+  close(): Promise<void> {
     this.input.value = '';
     this.suggestions.innerText = '';
     this.suggestions.style.display = 'none';
-    this.widget.style.display = 'none';
-  };
+    const widget = document.getElementById('commander');
+    if (widget) widget.style.display = 'none';
+    return super.close();
+  }
 
   showSuggestions = (suggs?: string[]) => {
     if (!suggs) {
@@ -83,11 +80,11 @@ export default class Widget {
       const command = this.handler.commands.get(suggs[0])!;
       const div = document.createElement('div');
       div.className = 'commander-suggestion';
-      let scheme = `<div>${command.scheme}</div>`;
+      let schema = `<div>${command.schema}</div>`;
       command.args.forEach((a) => {
-        scheme = scheme.replace('$' + a.name, `<span class="commander-suggestion-${a.type}">$${a.name}</span>`);
+        schema = schema.replace('$' + a.name, `<span class="commander-suggestion-${a.type}">$${a.name}</span>`);
       });
-      $(scheme).appendTo(div);
+      $(schema).appendTo(div);
       newSuggs.push(div);
     } else {
       if (suggs.length === 0) {
@@ -105,7 +102,7 @@ export default class Widget {
     this.suggestions.style.display = 'flex';
   };
 
-  getInputPlaceholder() {
+  private setInputPlaceholder() {
     const maxPlaceholder = parseInt(localize('Widget.PlaceholderMax'));
     const n = Math.floor(Math.random() * maxPlaceholder) + 1; // random int
     this.input.placeholder = localize(`Widget.Placeholder${n}`);

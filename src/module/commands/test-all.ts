@@ -3,7 +3,7 @@ import { ARGUMENT_TYPES } from '../utils';
 
 const testAllCommand: Command = {
   name: 'this',
-  scheme: 'this $command $has $all $types',
+  schema: 'this $command $has $all $types',
   args: [
     {
       name: 'command',
@@ -22,6 +22,7 @@ const testAllCommand: Command = {
       type: ARGUMENT_TYPES.RAW,
     },
   ],
+  hasPermissions: () => true,
   handler: ({ text }) => {
     ui.notifications?.info(`[${text}]`);
   },

@@ -11,6 +11,7 @@
   left: 30%;
   right: 30%;
   position: absolute;
+  box-shadow: 0 0 5px var(--color-shadow-primary);
 }
 
 .commander-modal .commander-suggestions {
@@ -61,4 +62,8 @@
 
 .commander-modal .commander-content .commander-input::placeholder {
   color: gray;
+}
+
+.commander-modal .commander-content .commander-input:focus {
+  box-shadow: none;
 }
