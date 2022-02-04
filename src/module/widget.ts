@@ -54,8 +54,9 @@ export default class Widget extends Application {
       this.close();
     });
     document.addEventListener('keydown', (ev) => {
-      if (ev.code === 'Escape') {
+      if (this.rendered && ev.code === 'Escape') {
         this.close();
+        ev.stopPropagation();
       }
     });
     this.input.focus();
@@ -103,7 +104,7 @@ export default class Widget extends Application {
   };
 
   private setInputPlaceholder() {
-    const maxPlaceholder = parseInt(localize('Widget.PlaceholderMax'));
+    const maxPlaceholder = parseInt(localize('Widget.PlaceholderMax') ?? 1);
     const n = Math.floor(Math.random() * maxPlaceholder) + 1; // random int
     this.input.placeholder = localize(`Widget.Placeholder${n}`);
   }

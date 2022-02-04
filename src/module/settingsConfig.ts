@@ -1,13 +1,12 @@
-import { MODULE_NAME, getGame, localize } from './utils';
+import { MODULE_NAME, MODULE_NAMESPACE, getGame, localize } from './utils';
 
-const namespace = MODULE_NAME.toLowerCase();
 export const enum SETTING {
   DEBUG = 'debug',
   ONLY_GM = 'onlyGM',
 }
 
 export function registerSettings(): void {
-  getGame().settings.register(namespace, SETTING.DEBUG, {
+  getGame().settings.register(MODULE_NAMESPACE, SETTING.DEBUG, {
     name: localize('Settings.DebugMode.Name'),
     hint: localize('Settings.DebugMode.Hint'),
     scope: 'world',
@@ -17,7 +16,7 @@ export function registerSettings(): void {
     onChange: (value) => console.log(`${MODULE_NAME} | ${localize('Settings.DebugMode.Log', { value })}`),
   });
 
-  getGame().settings.register(namespace, SETTING.ONLY_GM, {
+  getGame().settings.register(MODULE_NAMESPACE, SETTING.ONLY_GM, {
     name: localize('Settings.OnlyGM.Name'),
     hint: localize('Settings.OnlyGM.Hint'),
     scope: 'world',
@@ -28,9 +27,9 @@ export function registerSettings(): void {
 }
 
 export function getSetting(key: SETTING) {
-  return getGame().settings.get(namespace, key);
+  return getGame().settings.get(MODULE_NAMESPACE, key);
 }
 
 export function setSetting(key: SETTING, value: any) {
-  return getGame().settings.set(namespace, key, value);
+  return getGame().settings.set(MODULE_NAMESPACE, key, value);
 }

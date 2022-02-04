@@ -5,7 +5,7 @@
  */
 
 import { registerSettings } from './settingsConfig';
-import { setKeybindings } from './keybindingConfig';
+import { registerKeybindings } from './keybindingConfig';
 import CommandHandler from './CommandHandler';
 import testStringCommand from './commands/test-string';
 import newCommand from './commands/new';
@@ -17,7 +17,7 @@ import Widget from './widget';
 import testBooleanCommand from './commands/test-boolean';
 import testRawCommand from './commands/test-raw';
 import testAllCommand from './commands/test-all';
-import { MODULE_NAME } from './utils';
+import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils';
 
 let widget: Widget;
 
@@ -40,15 +40,11 @@ Hooks.once('init', async () => {
   widget = new Widget(handler);
 
   const { commands, register, execute } = handler;
-  (window as any).commander = { commands, register, execute };
-});
-
-Hooks.once('setup', async () => {
+  const module = getGame().modules.get(MODULE_NAMESPACE) as any;
+  if (module) {
+    module.api = { commands, register, execute };
+  }
   registerSettings();
-  setKeybindings(widget);
-});
-
-// When ready
-Hooks.once('ready', async () => {
+  registerKeybindings(widget);
   Hooks.callAll('commanderReady', (window as any).commander);
 });

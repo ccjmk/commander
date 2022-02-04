@@ -1,16 +1,16 @@
-import { getGame, localize, MODULE_NAME } from './utils';
+import { getGame, localize, MODULE_NAMESPACE } from './utils';
 import Widget from './widget';
 
 const { ALT, CONTROL, SHIFT } = KeyboardManager.MODIFIER_KEYS;
 
-export const setKeybindings = (widget: Widget) => {
-  getGame().keybindings.register(MODULE_NAME.toLowerCase(), 'openCommander', {
+export const registerKeybindings = (widget: Widget) => {
+  getGame().keybindings.register(MODULE_NAMESPACE, 'openCommander', {
     name: localize('Keybindings.Name'),
     hint: localize('Keybindings.Hint'),
     editable: [
       {
-        key: 'KeyC',
-        modifiers: [SHIFT, CONTROL],
+        key: 'Backquote',
+        modifiers: [CONTROL],
       },
     ],
     onDown: () => {

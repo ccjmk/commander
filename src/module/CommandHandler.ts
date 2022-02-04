@@ -5,8 +5,8 @@ import rawArg from './argumentTypes/rawArg';
 import stringArg from './argumentTypes/stringArg';
 import Command, { Argument } from './Command';
 import { getSetting, SETTING } from './settingsConfig';
-import { MODULE_ID, MODULE_NAME } from './utils';
-import { ARGUMENT_TYPES, getGame, localize } from './utils';
+import { MODULE_NAME } from './utils';
+import { ARGUMENT_TYPES, localize } from './utils';
 
 const argumentMap = new Map<ARGUMENT_TYPES, ArgumentType>();
 argumentMap.set(ARGUMENT_TYPES.NUMBER, numberArg);

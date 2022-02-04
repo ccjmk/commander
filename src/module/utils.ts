@@ -1,5 +1,5 @@
 export const MODULE_NAME = 'Commander';
-export const MODULE_ID = 'CMD';
+export const MODULE_NAMESPACE = 'commander';
 
 export function getGame(): Game {
   if (!(game instanceof Game)) {
@@ -9,7 +9,7 @@ export function getGame(): Game {
 }
 
 export function localize(key: string, data?: Record<string, unknown>) {
-  key = `${MODULE_ID}.${key}`;
+  key = `CMD.${key}`;
   if (data) {
     return getGame().i18n.format(key, data);
   } else {
