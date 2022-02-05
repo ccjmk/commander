@@ -15,6 +15,6 @@ export default interface Command {
   description?: string;
   schema: string;
   args: Argument[];
-  hasPermissions?: () => boolean;
+  allow?: () => boolean;
   handler: (...params: any) => any;
 }

@@ -1,7 +1,7 @@
-import Command from '../Command';
-import { ARGUMENT_TYPES } from '../utils';
+import Command from '../../Command';
+import { ARGUMENT_TYPES } from '../../utils';
 
-const testBooleanCommand: Command = {
+const booleanArgCommand: Command = {
   name: 'bool',
   schema: 'bool $bool',
   args: [
@@ -10,9 +10,8 @@ const testBooleanCommand: Command = {
       type: ARGUMENT_TYPES.BOOLEAN,
     },
   ],
-  hasPermissions: () => true,
   handler: ({ bool }) => {
     ui.notifications?.info(`[${bool}]`);
   },
 };
-export default testBooleanCommand;
+export default booleanArgCommand;

@@ -16,14 +16,17 @@
         "DebugRegex": "Regex for {commandName} ([ ] not part of regex): [{regex}]",
         "DebugRunningWithArgs": "Executing '{commandName}' with args: {paramObj}`",
         "NoMatchingCommand": "No matching command found",
-        "ArgumentsDontMatch": "Arguments don't match for command {commandName}"
+        "ArgumentsDontMatch": "Arguments don't match for command {commandName}",
+        "NotAllowed": "You are not allowed to run this command",
+        "NoGmAttempt": "Running commands disabled for non-GMs by module setting"
       },
       "Reg": {
         "CommandAlreadyExists": "Command '{commandName}' already exists",
-        "WrongString": "Unable to register command with incorrect data - '{fieldName}' required",
-        "WrongArray": "Unable to register command with incorrect data - array 'args' required",
-        "WrongArgument": "Unable to register command with incorrect data - type is not a supported argument type {argTypes}",
-        "WrongHandler": "Unable to register command with incorrect data - 'command.handler' must be a function"
+        "InvalidString": "Unable to register command with incorrect data - '{fieldName}' required",
+        "InvalidArray": "Unable to register command with incorrect data - array 'args' required",
+        "InvalidArgument": "Unable to register command with incorrect data - type is not a supported argument type {argTypes}",
+        "InvalidFunction": "Unable to register command with incorrect data - '{function}' must be a function",
+        "InvalidRole": "Unable to register command with incorrect role: {role}"
       }
     },
     "Keybindings": {
@@ -32,7 +35,7 @@
     },
     "Widget": {
       "comment": "PlaceholderMax is here so any translations can define how many placeholders they like",
-      "PlaceholderMax": "14",
+      "PlaceholderQuantity": "14",
       "Placeholder1": "Command..",
       "Placeholder2": "What shall we do today, master?",
       "Placeholder3": "Your word is my command",
@@ -47,6 +50,9 @@
       "Placeholder12": "What brings you to this part of town?",
       "Placeholder13": "What can I do for you?",
       "Placeholder14": "Run.."
+    },
+    "Debug": {
+      "NoGmAttempt": "Widget disabled for non-GMs by module setting."
     }
   }
 }

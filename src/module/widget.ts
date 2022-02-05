@@ -25,13 +25,11 @@ export default class Widget extends Application {
     this.input.addEventListener('keyup', (ev) => {
       // need keyUP to have the latest key registered
       const commandInput = (ev.target as HTMLInputElement).value;
-      const firstSpace = commandInput.indexOf(' ');
-      const command = firstSpace < 1 ? commandInput : commandInput.substring(0, firstSpace);
-      const suggestions = this.handler.suggestCommand(command);
-      if (ev.code === 'Tab') {
-        if (suggestions?.length === 1) {
-          this.input.value = suggestions[0] + ' ';
-        }
+      const suggestions = this.handler.suggestCommand(commandInput);
+      if (suggestions?.length && ev.code === 'Tab') {
+        this.input.value = suggestions[0] + ' ';
+        this.showSuggestions([suggestions.shift()!]);
+        return;
       }
       if (ev.code === 'Enter') {
         this.handler.execute(commandInput);
@@ -104,7 +102,7 @@ export default class Widget extends Application {
   };
 
   private setInputPlaceholder() {
-    const maxPlaceholder = parseInt(localize('Widget.PlaceholderMax') ?? 1);
+    const maxPlaceholder = parseInt(localize('Widget.PlaceholderQuantity') ?? 1);
     const n = Math.floor(Math.random() * maxPlaceholder) + 1; // random int
     this.input.placeholder = localize(`Widget.Placeholder${n}`);
   }

@@ -15,7 +15,6 @@ const newCommand: Command = {
       type: ARGUMENT_TYPES.STRING,
     },
   ],
-  hasPermissions: () => true,
   handler: async ({ entity, name }) => {
     switch (entity) {
       case 'actor':

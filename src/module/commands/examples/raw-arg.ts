@@ -1,7 +1,7 @@
-import Command from '../Command';
-import { ARGUMENT_TYPES } from '../utils';
+import Command from '../../Command';
+import { ARGUMENT_TYPES } from '../../utils';
 
-const testRawCommand: Command = {
+const rawArgCommand: Command = {
   name: 'raw',
   schema: 'raw $value',
   args: [
@@ -10,9 +10,8 @@ const testRawCommand: Command = {
       type: ARGUMENT_TYPES.RAW,
     },
   ],
-  hasPermissions: () => true,
   handler: ({ value }) => {
     ui.notifications?.info(`[${value}]`);
   },
 };
-export default testRawCommand;
+export default rawArgCommand;

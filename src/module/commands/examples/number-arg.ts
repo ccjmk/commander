@@ -1,7 +1,7 @@
-import Command from '../Command';
-import { ARGUMENT_TYPES } from '../utils';
+import Command from '../../Command';
+import { ARGUMENT_TYPES } from '../../utils';
 
-const testNumberCommand: Command = {
+const numberArgCommand: Command = {
   name: 'num',
   schema: 'num $number',
   args: [
@@ -10,9 +10,8 @@ const testNumberCommand: Command = {
       type: ARGUMENT_TYPES.NUMBER,
     },
   ],
-  hasPermissions: () => true,
   handler: ({ number }) => {
     ui.notifications?.info(`[${number}]`);
   },
 };
-export default testNumberCommand;
+export default numberArgCommand;

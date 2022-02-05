@@ -1,7 +1,7 @@
-import Command from '../Command';
-import { ARGUMENT_TYPES } from '../utils';
+import Command from '../../Command';
+import { ARGUMENT_TYPES } from '../../utils';
 
-const testStringCommand: Command = {
+const stringArgCommand: Command = {
   name: 'str',
   schema: 'str $text',
   args: [
@@ -10,9 +10,8 @@ const testStringCommand: Command = {
       type: ARGUMENT_TYPES.STRING,
     },
   ],
-  hasPermissions: () => true,
   handler: ({ text }) => {
     ui.notifications?.info(`[${text}]`);
   },
 };
-export default testStringCommand;
+export default stringArgCommand;

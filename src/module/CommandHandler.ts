@@ -5,7 +5,7 @@ import rawArg from './argumentTypes/rawArg';
 import stringArg from './argumentTypes/stringArg';
 import Command, { Argument } from './Command';
 import { getSetting, SETTING } from './settingsConfig';
-import { MODULE_NAME } from './utils';
+import { getGame, MODULE_NAME } from './utils';
 import { ARGUMENT_TYPES, localize } from './utils';
 
 const argumentMap = new Map<ARGUMENT_TYPES, ArgumentType>();
@@ -28,14 +28,31 @@ export default class CommandHandler {
 
   suggestCommand = (input: string): string[] | undefined => {
     if (!input) return undefined;
-    return [...this.commandMap.keys()].filter((c) => c.startsWith(input.replace(/$.*/, '')));
+    input = input.toLowerCase();
+    const firstSpace = input.indexOf(' ');
+    const command = firstSpace < 1 ? input : input.substring(0, firstSpace);
+    const allowedCommands = [...this.commandMap.values()].filter((c) => !c.allow || c.allow());
+    return allowedCommands
+      .map((c) => c.name)
+      .filter((c) => c.toLowerCase().trim().startsWith(command.replace(/$.*/, '')));
   };
 
   execute = async (input: string) => {
     const debugMode = getSetting(SETTING.DEBUG);
+
+    if (getSetting(SETTING.ONLY_GM) && !getGame().user?.isGM) {
+      ui.notifications?.error(localize('Handler.Exec.NoGmAttempt'));
+      return;
+    }
+
     const command = this.getCommand(input);
     if (!command) {
       ui.notifications?.warn(localize('Handler.Exec.NoMatchingCommand'));
+      return;
+    }
+
+    if (command.allow && !command.allow()) {
+      ui.notifications?.error(localize('Handler.Exec.NotAllowed'));
       return;
     }
 
@@ -76,16 +93,16 @@ export default class CommandHandler {
   register = (command: unknown, replace?: boolean) => {
     if (!isValidCommand(command)) return;
     if (this.commandMap.get(command.name) && !replace) {
-      throw new Error(localize('Handler.Reg.CommandAlreadyExists'));
+      throw new Error(localize('Handler.Reg.CommandAlreadyExists', { commandName: command.name }));
     }
     this.regexCache.set(command, buildRegex(command.schema, command.args));
-    this.commandMap.set(command.name, command);
+    this.commandMap.set(command.name.trim(), command);
   };
 
   private getCommand(input: string): Command | undefined {
     const firstSpace = input.indexOf(' ');
-    const commandName = (firstSpace != -1 ? input.substring(0, firstSpace) : input).toLowerCase();
-    return this.commandMap.get(commandName);
+    const commandName = (firstSpace != -1 ? input.substring(0, firstSpace) : input).toLowerCase().trim();
+    return this.commandMap.get([...this.commandMap.keys()].find((c) => c.toLowerCase().trim() === commandName) ?? '');
   }
 }
 
@@ -102,7 +119,8 @@ function isValidCommand(command: any): command is Command {
   isValidStringField(command.name, 'name');
   isValidStringField(command.schema, 'schema');
   isArgumentArray(command.args);
-  isValidHandler(command.handler);
+  isValidFunction(command.handler);
+  isValidFunction(command.allow, 'allow');
   // TODO check if raw argument is last on schema ?
   return true;
 }
@@ -113,13 +131,13 @@ const isValidStringField = (field: any, fieldName: string) => {
     field === null ||
     ((typeof field === 'string' || field instanceof String) && field.length === 0)
   ) {
-    throw new Error(localize('Handler.Reg.WrongString', { fieldName }));
+    throw new Error(localize('Handler.Reg.InvalidString', { fieldName }));
   }
 };
 
 function isArgumentArray(args: any): args is Array<Argument> {
   if (args === undefined || args === null || !Array.isArray(args)) {
-    throw new Error(localize('Handler.Reg.WrongArray'));
+    throw new Error(localize('Handler.Reg.InvalidArray'));
   }
   for (const arg of args) {
     isValidArgument(arg);
@@ -131,14 +149,32 @@ function isValidArgument(arg: any): arg is Argument {
   isValidStringField(arg.name, 'arg.name');
   isValidStringField(arg.type, 'arg.type');
   if (!Object.values(ARGUMENT_TYPES).includes(arg.type)) {
-    throw new Error(localize('Handler.Reg.WrongArgument', { argTypes: Object.values(ARGUMENT_TYPES) }));
+    throw new Error(localize('Handler.Reg.InvalidArgument', { argTypes: Object.values(ARGUMENT_TYPES) }));
   }
   return true;
 }
 
-function isValidHandler(handler: any) {
+function isValidFunction(handler: any, allow?: any) {
+  if (!handler && allow) return true;
   if (typeof handler !== 'function') {
-    throw new Error(localize('Handler.Reg.WrongHandler'));
+    throw new Error(localize('Handler.Reg.InvalidFunction', { function: allow ? 'command.allow' : 'command.handler' }));
   }
   // TODO somehow check that the handler has the correct arguments (no more, no less)?
+}
+
+export const hasPermissions = (permissions: string[]) => {
+  return () => {
+    getGame().user?.permission;
+  };
+};
+
+export const hasRole = (role: string) => {
+  if (!isValidRole(role)) throw new Error(localize('Handler.Reg.InvalidRole'));
+  return () => {
+    return getGame().user?.hasRole(role) ?? false;
+  };
+};
+
+function isValidRole(role: string): role is keyof typeof CONST.USER_ROLES {
+  return Object.keys(CONST.USER_ROLES).includes(role.toUpperCase());
 }

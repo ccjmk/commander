@@ -6,31 +6,36 @@
 
 import { registerSettings } from './settingsConfig';
 import { registerKeybindings } from './keybindingConfig';
-import CommandHandler from './CommandHandler';
-import testStringCommand from './commands/test-string';
+import CommandHandler, { hasRole } from './CommandHandler';
 import newCommand from './commands/new';
 import newOwnedCommand from './commands/new-owned';
 import sheetByNameCommand from './commands/sheet-player';
 import sheetByPlayerCommand from './commands/sheet-name';
-import testNumberCommand from './commands/test-number';
 import Widget from './widget';
-import testBooleanCommand from './commands/test-boolean';
-import testRawCommand from './commands/test-raw';
-import testAllCommand from './commands/test-all';
+import allArgsCommand from './commands/examples/all-args';
 import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils';
+import stringArgCommand from './commands/examples/string-arg';
+import numberArgCommand from './commands/examples/number-arg';
+import booleanArgCommand from './commands/examples/boolean-arg';
+import rawArgCommand from './commands/examples/raw-arg';
+import onlyAllowTrustedCommand from './commands/examples/role-trusted';
+import requireCreateActorsPermissionCommand from './commands/examples/permissions-create-actor';
 
 let widget: Widget;
 
-// Initialize module
-Hooks.once('init', async () => {
+Hooks.once('setup', async () => {
   console.log(`${MODULE_NAME} | Initializing..`);
 
   const handler = new CommandHandler();
-  handler.register(testStringCommand);
-  handler.register(testNumberCommand);
-  handler.register(testBooleanCommand);
-  handler.register(testRawCommand);
-  handler.register(testAllCommand);
+
+  // TODO move these to README in JS form
+  handler.register(stringArgCommand);
+  handler.register(numberArgCommand);
+  handler.register(booleanArgCommand);
+  handler.register(rawArgCommand);
+  handler.register(allArgsCommand);
+  handler.register(onlyAllowTrustedCommand);
+  handler.register(requireCreateActorsPermissionCommand);
 
   handler.register(newCommand);
   handler.register(newOwnedCommand);
@@ -43,6 +48,7 @@ Hooks.once('init', async () => {
   const module = getGame().modules.get(MODULE_NAMESPACE) as any;
   if (module) {
     module.api = { commands, register, execute };
+    module.helpers = { hasRole };
   }
   registerSettings();
   registerKeybindings(widget);

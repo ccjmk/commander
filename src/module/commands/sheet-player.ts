@@ -11,7 +11,6 @@ const sheetByNameCommand: Command = {
       type: ARGUMENT_TYPES.STRING,
     },
   ],
-  hasPermissions: () => true,
   handler: ({ player }) => {
     const sheet = getGame().users!.getName(player)?.character?.sheet;
     if (!sheet) {
