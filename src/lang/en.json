@@ -26,7 +26,8 @@
         "InvalidArray": "Unable to register command with incorrect data - array 'args' required",
         "InvalidArgument": "Unable to register command with incorrect data - type is not a supported argument type {argTypes}",
         "InvalidFunction": "Unable to register command with incorrect data - '{function}' must be a function",
-        "InvalidRole": "Unable to register command with incorrect role: {role}"
+        "InvalidRole": "Unable to register command with incorrect role: {role}",
+        "InvalidPermission": "Unable to register command with incorrect permission: {permission}"
       }
     },
     "Keybindings": {

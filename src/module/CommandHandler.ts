@@ -162,19 +162,30 @@ function isValidFunction(handler: any, allow?: any) {
   // TODO somehow check that the handler has the correct arguments (no more, no less)?
 }
 
-export const hasPermissions = (permissions: string[]) => {
+export const hasPermissions = (...permissions: string[]) => {
+  const checkedPermissions: (keyof typeof CONST.USER_PERMISSIONS)[] = [];
+  for (const p of permissions) {
+    if (!isValidPermission(p)) throw new Error(localize('Handler.Reg.InvalidPermission', { permission: p }));
+    checkedPermissions.push(p);
+  }
   return () => {
-    getGame().user?.permission;
+    const g = getGame();
+    if (!g || !g.permissions) return false;
+    return checkedPermissions.every((p) => g.permissions![p].includes(g.user!.role));
   };
 };
 
 export const hasRole = (role: string) => {
-  if (!isValidRole(role)) throw new Error(localize('Handler.Reg.InvalidRole'));
+  if (!isValidRole(role)) throw new Error(localize('Handler.Reg.InvalidRole', { role }));
   return () => {
     return getGame().user?.hasRole(role) ?? false;
   };
 };
 
 function isValidRole(role: string): role is keyof typeof CONST.USER_ROLES {
-  return Object.keys(CONST.USER_ROLES).includes(role.toUpperCase());
+  return Object.keys(CONST.USER_ROLES).includes(role);
+}
+
+function isValidPermission(permission: string): permission is keyof typeof CONST.USER_PERMISSIONS {
+  return Object.keys(CONST.USER_PERMISSIONS).includes(permission);
 }

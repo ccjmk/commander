@@ -6,7 +6,7 @@
 
 import { registerSettings } from './settingsConfig';
 import { registerKeybindings } from './keybindingConfig';
-import CommandHandler, { hasRole } from './CommandHandler';
+import CommandHandler, { hasPermissions, hasRole } from './CommandHandler';
 import newCommand from './commands/new';
 import newOwnedCommand from './commands/new-owned';
 import sheetByNameCommand from './commands/sheet-player';
@@ -48,7 +48,7 @@ Hooks.once('setup', async () => {
   const module = getGame().modules.get(MODULE_NAMESPACE) as any;
   if (module) {
     module.api = { commands, register, execute };
-    module.helpers = { hasRole };
+    module.helpers = { hasRole, hasPermissions };
   }
   registerSettings();
   registerKeybindings(widget);
