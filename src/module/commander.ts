@@ -11,7 +11,6 @@ import Widget from './widget';
 import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
 import registerCommands from './commands';
 
-
 let widget: Widget;
 
 Hooks.once('setup', async () => {
