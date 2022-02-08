@@ -35,7 +35,7 @@
       "Hint": "Opens the Commander window"
     },
     "Widget": {
-      "comment": "PlaceholderMax is here so any translations can define how many placeholders they like",
+      "comment": "PlaceholderQuantity is here so any translations can define how many placeholders they like",
       "PlaceholderQuantity": "14",
       "Placeholder1": "Command..",
       "Placeholder2": "What shall we do today, master?",

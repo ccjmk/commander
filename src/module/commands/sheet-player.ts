@@ -1,5 +1,5 @@
 import Command from '../Command';
-import { ARGUMENT_TYPES, getGame } from '../utils';
+import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
 const sheetByNameCommand: Command = {
   name: 'sheet:player',

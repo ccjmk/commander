@@ -1,4 +1,4 @@
-import { ARGUMENT_TYPES } from './utils';
+import { ARGUMENT_TYPES } from '../utils/moduleUtils';
 
 export interface ArgumentType {
   type: ARGUMENT_TYPES;

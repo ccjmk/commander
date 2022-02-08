@@ -1,7 +1,6 @@
 /**
  * Authors: Iñaki "ccjmk" Guastalli, Miguel Galante
- * Content License: See CONTENT-LICENSE
- * Software License: See LICENSE
+ * License: MIT, see LICENSE
  */
 
 import { registerSettings } from './settingsConfig';
@@ -13,13 +12,15 @@ import sheetByNameCommand from './commands/sheet-player';
 import sheetByPlayerCommand from './commands/sheet-name';
 import Widget from './widget';
 import allArgsCommand from './commands/examples/all-args';
-import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils';
+import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
 import stringArgCommand from './commands/examples/string-arg';
 import numberArgCommand from './commands/examples/number-arg';
 import booleanArgCommand from './commands/examples/boolean-arg';
 import rawArgCommand from './commands/examples/raw-arg';
 import onlyAllowTrustedCommand from './commands/examples/role-trusted';
 import requireCreateActorsPermissionCommand from './commands/examples/permissions-create-actor';
+import macroCommand from './commands/macro';
+import showAllowedCommand from './commands/show-allowed';
 
 let widget: Widget;
 
@@ -41,6 +42,8 @@ Hooks.once('setup', async () => {
   handler.register(newOwnedCommand);
   handler.register(sheetByNameCommand);
   handler.register(sheetByPlayerCommand);
+  handler.register(macroCommand);
+  handler.register(showAllowedCommand);
 
   widget = new Widget(handler);
 

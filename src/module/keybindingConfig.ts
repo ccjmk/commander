@@ -1,5 +1,5 @@
 import { getSetting, SETTING } from './settingsConfig';
-import { getGame, localize, MODULE_NAME, MODULE_NAMESPACE } from './utils';
+import { getGame, localize, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
 import Widget from './widget';
 
 const { ALT, CONTROL, SHIFT } = KeyboardManager.MODIFIER_KEYS;

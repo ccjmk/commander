@@ -1,4 +1,4 @@
-import { ARGUMENT_TYPES } from './utils';
+import { ARGUMENT_TYPES } from './utils/moduleUtils';
 
 interface Suggestion {
   displayName: string;

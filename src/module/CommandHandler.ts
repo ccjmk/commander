@@ -1,12 +1,12 @@
-import { ArgumentType } from './ArgumentType';
+import { ArgumentType } from './argumentTypes/ArgumentType';
 import booleanArg from './argumentTypes/booleanArg';
 import numberArg from './argumentTypes/numberArg';
 import rawArg from './argumentTypes/rawArg';
 import stringArg from './argumentTypes/stringArg';
 import Command, { Argument } from './Command';
 import { getSetting, SETTING } from './settingsConfig';
-import { getGame, MODULE_NAME } from './utils';
-import { ARGUMENT_TYPES, localize } from './utils';
+import { getGame, MODULE_NAME } from './utils/moduleUtils';
+import { ARGUMENT_TYPES, localize } from './utils/moduleUtils';
 
 const argumentMap = new Map<ARGUMENT_TYPES, ArgumentType>();
 argumentMap.set(ARGUMENT_TYPES.NUMBER, numberArg);

@@ -1,6 +1,6 @@
-import { createActor } from '../actorUtils';
+import { createActor } from '../utils/actorUtils';
 import Command from '../Command';
-import { ARGUMENT_TYPES, getGame } from '../utils';
+import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
 const newOwnedCommand: Command = {
   name: 'new:owned',

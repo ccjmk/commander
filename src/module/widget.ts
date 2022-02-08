@@ -1,5 +1,5 @@
 import CommandHandler from './CommandHandler';
-import { MODULE_NAME, localize } from './utils';
+import { MODULE_NAME, localize } from './utils/moduleUtils';
 
 export default class Widget extends Application {
   constructor(private readonly handler: CommandHandler) {

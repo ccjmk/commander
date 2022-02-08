@@ -1,4 +1,4 @@
-import { MODULE_NAME, MODULE_NAMESPACE, getGame, localize } from './utils';
+import { MODULE_NAME, MODULE_NAMESPACE, getGame, localize } from './utils/moduleUtils';
 
 export const enum SETTING {
   DEBUG = 'debug',

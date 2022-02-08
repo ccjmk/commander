@@ -1,5 +1,5 @@
 import Command from '../../Command';
-import { ARGUMENT_TYPES } from '../../utils';
+import { ARGUMENT_TYPES } from '../../utils/moduleUtils';
 
 const allArgsCommand: Command = {
   name: 'test',

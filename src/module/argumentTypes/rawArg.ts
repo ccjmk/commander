@@ -1,5 +1,5 @@
-import { ArgumentType } from '../ArgumentType';
-import { ARGUMENT_TYPES } from '../utils';
+import { ArgumentType } from './ArgumentType';
+import { ARGUMENT_TYPES } from '../utils/moduleUtils';
 
 const rawArg: ArgumentType = {
   type: ARGUMENT_TYPES.RAW,

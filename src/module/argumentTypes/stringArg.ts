@@ -1,5 +1,5 @@
-import { ArgumentType } from '../ArgumentType';
-import { ARGUMENT_TYPES } from '../utils';
+import { ArgumentType } from './ArgumentType';
+import { ARGUMENT_TYPES } from '../utils/moduleUtils';
 
 const stringArg: ArgumentType = {
   type: ARGUMENT_TYPES.STRING,
