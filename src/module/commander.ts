@@ -21,6 +21,8 @@ import onlyAllowTrustedCommand from './commands/examples/role-trusted';
 import requireCreateActorsPermissionCommand from './commands/examples/permissions-create-actor';
 import macroCommand from './commands/macro';
 import showAllowedCommand from './commands/show-allowed';
+import macroEditCommand from './commands/macro-edit';
+import compendiumCommand from './commands/compendium';
 
 let widget: Widget;
 
@@ -42,7 +44,9 @@ Hooks.once('setup', async () => {
   handler.register(newOwnedCommand);
   handler.register(sheetByNameCommand);
   handler.register(sheetByPlayerCommand);
+  handler.register(compendiumCommand);
   handler.register(macroCommand);
+  handler.register(macroEditCommand);
   handler.register(showAllowedCommand);
 
   widget = new Widget(handler);
@@ -55,5 +59,5 @@ Hooks.once('setup', async () => {
   }
   registerSettings();
   registerKeybindings(widget);
-  Hooks.callAll('commanderReady', (window as any).commander);
+  Hooks.callAll('commanderReady', module);
 });

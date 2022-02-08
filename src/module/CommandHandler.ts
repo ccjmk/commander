@@ -38,6 +38,7 @@ export default class CommandHandler {
   };
 
   execute = async (input: string) => {
+    Hooks.callAll('commanderExecute', input);
     const debugMode = getSetting(SETTING.DEBUG);
 
     if (getSetting(SETTING.ONLY_GM) && !getGame().user?.isGM) {
