@@ -1,19 +1,19 @@
-import Command from '../Command';
-import compendiumCommand from './compendium';
-import allArgsCommand from './examples/all-args';
-import booleanArgCommand from './examples/boolean-arg';
-import numberArgCommand from './examples/number-arg';
-import requireCreateActorsPermissionCommand from './examples/permissions-create-actor';
-import rawArgCommand from './examples/raw-arg';
-import onlyAllowTrustedCommand from './examples/role-trusted';
-import stringArgCommand from './examples/string-arg';
-import macroCommand from './macro';
-import macroEditCommand from './macro-edit';
+import Command from '../command';
+import openCompendiumCommand from './openCompendium';
+import allArgsCommand from './examples/allArgsExample';
+import booleanArgCommand from './examples/booleanArgExample';
+import numberArgCommand from './examples/numberArgExample';
+import requireCreateActorsPermissionCommand from './examples/permissionsCreateActorExample';
+import rawArgCommand from './examples/rawArgExample';
+import onlyAllowTrustedCommand from './examples/roleTrustedExample';
+import stringArgCommand from './examples/stringArgExample';
+import openMacroCommand from './openMacro';
+import editMacroCommand from './editMacro';
 import newCommand from './new';
-import newOwnedCommand from './new-owned';
-import sheetByPlayerCommand from './sheet-name';
-import sheetByNameCommand from './sheet-player';
-import showAllowedCommand from './show-allowed';
+import newOwnedCommand from './newOwned';
+import openSheetByNameCommand from './openSheetByName';
+import openSheetByPlayerCommand from './openSheetByPlayer';
+import showAllowedCommand from './showAllowedCommands';
 
 const registerCommands = (register: (command: Command) => void) => {
   // TODO move these to README in JS form
@@ -27,11 +27,11 @@ const registerCommands = (register: (command: Command) => void) => {
 
   register(newCommand);
   register(newOwnedCommand);
-  register(sheetByNameCommand);
-  register(sheetByPlayerCommand);
-  register(compendiumCommand);
-  register(macroCommand);
-  register(macroEditCommand);
+  register(openSheetByNameCommand);
+  register(openSheetByPlayerCommand);
+  register(openCompendiumCommand);
+  register(openMacroCommand);
+  register(editMacroCommand);
   register(showAllowedCommand);
 };
 

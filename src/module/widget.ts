@@ -1,4 +1,4 @@
-import CommandHandler from './CommandHandler';
+import CommandHandler from './commandHandler';
 import { MODULE_NAME, localize } from './utils/moduleUtils';
 
 export default class Widget extends Application {
@@ -48,7 +48,7 @@ export default class Widget extends Application {
     });
 
     const div = document.getElementById('commander') as HTMLElement;
-    div.addEventListener('click', (ev) => {
+    div.addEventListener('click', () => {
       this.close();
     });
     document.addEventListener('keydown', (ev) => {

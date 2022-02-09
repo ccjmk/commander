@@ -1,7 +1,7 @@
-import Command from '../Command';
-import { ARGUMENT_TYPES, getGame, localize } from '../utils/moduleUtils';
+import Command from '../command';
+import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
-const macroEditCommand: Command = {
+const editMacroCommand: Command = {
   name: 'macro:edit',
   description: 'Opens the "edit macro" window for a given macro by name',
   schema: 'macro:edit $name',
@@ -20,4 +20,4 @@ const macroEditCommand: Command = {
     new MacroConfig(macro).render(true);
   },
 };
-export default macroEditCommand;
+export default editMacroCommand;

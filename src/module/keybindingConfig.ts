@@ -2,7 +2,7 @@ import { getSetting, SETTING } from './settingsConfig';
 import { getGame, localize, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
 import Widget from './widget';
 
-const { ALT, CONTROL, SHIFT } = KeyboardManager.MODIFIER_KEYS;
+const { CONTROL } = KeyboardManager.MODIFIER_KEYS;
 
 export const registerKeybindings = (widget: Widget) => {
   getGame().keybindings.register(MODULE_NAMESPACE, 'openCommander', {

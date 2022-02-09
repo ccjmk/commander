@@ -5,7 +5,7 @@
 
 import { registerSettings } from './settingsConfig';
 import { registerKeybindings } from './keybindingConfig';
-import CommandHandler, { hasPermissions, hasRole } from './CommandHandler';
+import CommandHandler, { hasPermissions, hasRole } from './commandHandler';
 
 import Widget from './widget';
 import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';

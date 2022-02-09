@@ -1,4 +1,4 @@
-import Command from '../Command';
+import Command from '../command';
 import { getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const showAllowedCommand: Command = {

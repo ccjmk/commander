@@ -1,7 +1,7 @@
-import Command from '../Command';
-import { ARGUMENT_TYPES, getGame, localize } from '../utils/moduleUtils';
+import Command from '../command';
+import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
-const macroCommand: Command = {
+const openMacroCommand: Command = {
   name: 'macro',
   description: 'executes a macro by name',
   schema: 'macro $name',
@@ -20,4 +20,4 @@ const macroCommand: Command = {
     macro.execute();
   },
 };
-export default macroCommand;
+export default openMacroCommand;
