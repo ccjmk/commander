@@ -1,9 +1,9 @@
-import { ArgumentType } from './argumentTypes/ArgumentType';
-import booleanArg from './argumentTypes/booleanArg';
-import numberArg from './argumentTypes/numberArg';
-import rawArg from './argumentTypes/rawArg';
-import stringArg from './argumentTypes/stringArg';
-import Command, { Argument } from './Command';
+import ArgumentType from './arguments/argumentType';
+import booleanArg from './arguments/booleanArg';
+import numberArg from './arguments/numberArg';
+import rawArg from './arguments/rawArg';
+import stringArg from './arguments/stringArg';
+import Command, { Argument } from './command';
 import { getSetting, SETTING } from './settingsConfig';
 import { getGame, MODULE_NAME } from './utils/moduleUtils';
 import { ARGUMENT_TYPES, localize } from './utils/moduleUtils';
@@ -98,6 +98,7 @@ export default class CommandHandler {
     }
     this.regexCache.set(command, buildRegex(command.schema, command.args));
     this.commandMap.set(command.name.trim(), command);
+    console.log(localize('Handler.Reg.CommandRegistered', { commandName: command.name }));
   };
 
   private getCommand(input: string): Command | undefined {

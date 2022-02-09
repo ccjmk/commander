@@ -1,4 +1,4 @@
-import Command from '../../Command';
+import Command from '../../command';
 import { ARGUMENT_TYPES } from '../../utils/moduleUtils';
 
 const rawArgCommand: Command = {

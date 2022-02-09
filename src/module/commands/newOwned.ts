@@ -1,5 +1,5 @@
 import { createActor } from '../utils/actorUtils';
-import Command from '../Command';
+import Command from '../command';
 import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
 const newOwnedCommand: Command = {

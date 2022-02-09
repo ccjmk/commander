@@ -21,6 +21,7 @@
         "NoGmAttempt": "Running commands disabled for non-GMs by module setting"
       },
       "Reg": {
+        "CommandRegistered": "Command '{commandName}' registered successfully",
         "CommandAlreadyExists": "Command '{commandName}' already exists",
         "InvalidString": "Unable to register command with incorrect data - '{fieldName}' required",
         "InvalidArray": "Unable to register command with incorrect data - array 'args' required",

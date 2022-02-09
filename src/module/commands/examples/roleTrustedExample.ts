@@ -1,5 +1,5 @@
-import Command from '../../Command';
-import { hasRole } from '../../CommandHandler';
+import Command from '../../command';
+import { hasRole } from '../../commandHandler';
 
 const onlyAllowTrustedCommand: Command = {
   name: 'onlyTrusted',

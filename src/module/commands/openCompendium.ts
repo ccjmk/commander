@@ -1,7 +1,7 @@
-import Command from '../Command';
-import { ARGUMENT_TYPES, getGame, localize } from '../utils/moduleUtils';
+import Command from '../command';
+import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
-const compendiumCommand: Command = {
+const openCompendiumCommand: Command = {
   name: 'comp',
   description: 'Opens a compendium by title',
   schema: 'comp $title',
@@ -20,4 +20,4 @@ const compendiumCommand: Command = {
     new Compendium(c).render(true);
   },
 };
-export default compendiumCommand;
+export default openCompendiumCommand;

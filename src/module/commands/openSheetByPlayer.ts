@@ -1,10 +1,10 @@
-import Command from '../Command';
+import Command from '../command';
 import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
-const sheetByPlayerCommand: Command = {
-  name: 'sheet:name',
-  description: 'opens/closes the character sheet of a given actor by name.',
-  schema: 'sheet:name $player',
+const openSheetByPlayerCommand: Command = {
+  name: 'sheet:player',
+  description: 'opens/closes the character sheet of the actor a given player controls.',
+  schema: 'sheet:player $player',
   args: [
     {
       name: 'player',
@@ -25,4 +25,4 @@ const sheetByPlayerCommand: Command = {
     }
   },
 };
-export default sheetByPlayerCommand;
+export default openSheetByPlayerCommand;
