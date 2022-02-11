@@ -21,7 +21,7 @@ Hooks.once('setup', async () => {
   widget = new Widget(handler);
 
   const { commands, register, execute } = handler;
-  const module = getGame().modules.get(MODULE_NAMESPACE) as any;
+  const module = getGame().modules.get(MODULE_NAMESPACE) as { [key: string]: any };
   if (module) {
     module.api = { commands, register, execute };
     module.helpers = { hasRole, hasPermissions };

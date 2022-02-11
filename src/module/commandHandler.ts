@@ -117,46 +117,85 @@ function buildRegex(schema: Command['schema'], args: Command['args']) {
   return reg;
 }
 
-function isValidCommand(command: any): command is Command {
-  isValidStringField(command.name, 'name');
-  isValidStringField(command.schema, 'schema');
-  isArgumentArray(command.args);
-  isValidFunction(command.handler);
-  isValidFunction(command.allow, 'allow');
+function isValidCommand(command: unknown): command is Command {
+  if (!isNotNullObject(command)) {
+    throw 'Command is not an object';
+  }
+
+  isValidStringField(command, 'name');
+  isValidStringField(command, 'schema');
+  isArgumentArray(command);
+  isValidFunction(command, 'handler');
+  isValidFunction(command, 'allow');
   // TODO check if raw argument is last on schema ?
   return true;
 }
 
-const isValidStringField = (field: any, fieldName: string) => {
-  if (
-    field === undefined ||
-    field === null ||
-    ((typeof field === 'string' || field instanceof String) && field.length === 0)
-  ) {
-    throw new Error(localize('Handler.Reg.InvalidString', { fieldName }));
-  }
+const isNotNullObject = (obj: unknown): obj is object => {
+  return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
 };
 
-function isArgumentArray(args: any): args is Array<Argument> {
-  if (args === undefined || args === null || !Array.isArray(args)) {
-    throw new Error(localize('Handler.Reg.InvalidArray'));
+/**
+ * Type guard: Checks if given object x has the key.
+ */
+const has = <K extends string>(key: K, x: object): x is { [key in K]: unknown } => key in x;
+
+const isValidStringField = (command: object, fieldName: string, fieldDescription?: string) => {
+  if (has(fieldName, command)) {
+    const field = command[fieldName];
+
+    if (isString(field) && field.length > 0) {
+      return true;
+    }
   }
-  for (const arg of args) {
-    isValidArgument(arg);
+  throw new Error(localize('Handler.Reg.InvalidString', { fieldName: fieldDescription || fieldName }));
+};
+
+const isString = (str: unknown): str is string => typeof str === 'string' || str instanceof String;
+
+function isArray(array: unknown): array is Array<unknown> {
+  if (array === undefined || array === null || !Array.isArray(array)) {
+    return false;
   }
   return true;
 }
 
-function isValidArgument(arg: any): arg is Argument {
-  isValidStringField(arg.name, 'arg.name');
-  isValidStringField(arg.type, 'arg.type');
-  if (!Object.values(ARGUMENT_TYPES).includes(arg.type)) {
+function isArgumentArray(command: object): command is { args: Array<Argument> } {
+  if (has('args', command)) {
+    const args = command['args'];
+    if (!isArray(args)) {
+      throw new Error(localize('Handler.Reg.InvalidArray'));
+    }
+    for (const arg of args) {
+      isValidArgument(arg);
+    }
+  }
+  return true;
+}
+
+function isValidArgument(arg: unknown): arg is Argument {
+  if (!isNotNullObject(arg)) {
+    throw 'Command is not an object';
+  }
+  isValidStringField(arg, 'name', 'arg.name');
+  isValidStringField(arg, 'type', 'arg.type');
+
+  if (!has('type', arg)) {
     throw new Error(localize('Handler.Reg.InvalidArgument', { argTypes: Object.values(ARGUMENT_TYPES) }));
   }
+  const type = arg.type;
+  if (!(typeof type === 'string')) {
+    throw new Error(localize('Handler.Reg.InvalidArgument', { argTypes: Object.values(ARGUMENT_TYPES) }));
+  }
+
+  if (!isString(arg.type) || !(Object.values(ARGUMENT_TYPES) as string[]).includes(arg.type)) {
+    throw new Error(localize('Handler.Reg.InvalidArgument', { argTypes: Object.values(ARGUMENT_TYPES) }));
+  }
+
   return true;
 }
 
-function isValidFunction(handler: any, allow?: any) {
+function isValidFunction(handler: unknown, allow?: any) {
   if (!handler && allow) return true;
   if (typeof handler !== 'function') {
     throw new Error(localize('Handler.Reg.InvalidFunction', { function: allow ? 'command.allow' : 'command.handler' }));
