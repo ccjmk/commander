@@ -76,7 +76,7 @@ export default class Widget extends Application {
     }
     let newSuggs: HTMLDivElement[] = [];
     if (suggs.length === 1) {
-      const command = this.handler.commands.get(suggs[0])!;
+      const command = this.handler.commands.find((c) => c.name === suggs![0])!;
       const div = document.createElement('div');
       div.className = 'commander-suggestion';
       let schema = `<div>${command.schema}</div>`;

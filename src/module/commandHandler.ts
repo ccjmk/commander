@@ -22,8 +22,8 @@ export default class CommandHandler {
     this.commandMap = new Map<string, Command>();
   }
 
-  get commands() {
-    return this.commandMap;
+  get commands(): Command[] {
+    return [...this.commandMap.values()];
   }
 
   suggestCommand = (input: string): string[] | undefined => {
