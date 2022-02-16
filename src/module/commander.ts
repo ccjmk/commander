@@ -10,8 +10,21 @@ import CommandHandler, { hasPermissions, hasRole } from './commandHandler';
 import Widget from './widget';
 import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
 import registerCommands from './commands';
+import Command from './command';
 
 let widget: Widget;
+
+interface ModuleApi {
+  api?: {
+    commands: Command[];
+    register: (command: Command, replace?: boolean) => void;
+    execute: (input: string, ...args: any[]) => any;
+  };
+  helpers?: {
+    hasRole: (role: string) => () => boolean;
+    hasPermissions: (...permissions: string[]) => () => boolean;
+  };
+}
 
 Hooks.once('setup', async () => {
   console.log(`${MODULE_NAME} | Initializing..`);
@@ -21,12 +34,11 @@ Hooks.once('setup', async () => {
   widget = new Widget(handler);
 
   const { commands, register, execute } = handler;
-  const module = getGame().modules.get(MODULE_NAMESPACE) as any;
-  if (module) {
-    module.api = { commands, register, execute };
-    module.helpers = { hasRole, hasPermissions };
-  }
+  const module: Game.ModuleData<foundry.packages.ModuleData> & ModuleApi = getGame().modules.get(MODULE_NAMESPACE)!;
+  module.api = { commands, register, execute };
+  module.helpers = { hasRole, hasPermissions };
   registerSettings();
   registerKeybindings(widget);
+  console.log(`${MODULE_NAME} | Commander ready..`);
   Hooks.callAll('commanderReady', module);
 });
