@@ -7,6 +7,7 @@ import Command, { Argument } from './command';
 import { getSetting, SETTING } from './settingsConfig';
 import { getGame, MODULE_NAME } from './utils/moduleUtils';
 import { ARGUMENT_TYPES, localize } from './utils/moduleUtils';
+import { has, isNotNullObject, isValidPermission, isValidRole } from './utils/typeChecking';
 
 const argumentMap = new Map<ARGUMENT_TYPES, ArgumentType>();
 argumentMap.set(ARGUMENT_TYPES.NUMBER, numberArg);
@@ -131,15 +132,6 @@ function isValidCommand(command: unknown): command is Command {
   return true;
 }
 
-const isNotNullObject = (obj: unknown): obj is object => {
-  return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
-};
-
-/**
- * Type guard: Checks if given object x has the key.
- */
-const has = <K extends string>(key: K, x: object): x is { [key in K]: unknown } => key in x;
-
 const isValidStringField = (command: object, fieldName: string, fieldDescription?: string) => {
   if (has(fieldName, command)) {
     const field = command[fieldName];
@@ -222,11 +214,3 @@ export const hasRole = (role: string) => {
     return getGame().user?.hasRole(role) ?? false;
   };
 };
-
-function isValidRole(role: string): role is keyof typeof CONST.USER_ROLES {
-  return Object.keys(CONST.USER_ROLES).includes(role);
-}
-
-function isValidPermission(permission: string): permission is keyof typeof CONST.USER_PERMISSIONS {
-  return Object.keys(CONST.USER_PERMISSIONS).includes(permission);
-}
