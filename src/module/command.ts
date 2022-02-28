@@ -1,6 +1,6 @@
 import { ARGUMENT_TYPES } from './utils/moduleUtils';
 
-interface Suggestion {
+export interface Suggestion {
   displayName: string;
 }
 

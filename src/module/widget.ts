@@ -1,3 +1,4 @@
+import Command, { Suggestion } from './command';
 import CommandHandler from './commandHandler';
 import { MODULE_NAME, localize } from './utils/moduleUtils';
 
@@ -13,7 +14,7 @@ export default class Widget extends Application {
   }
 
   private input!: HTMLInputElement;
-  private suggestions!: HTMLDivElement;
+  private commandSuggestions!: HTMLDivElement;
 
   activateListeners() {
     this.input = document.getElementById('commander-input') as HTMLInputElement;
@@ -25,25 +26,27 @@ export default class Widget extends Application {
     this.input.addEventListener('keyup', (ev) => {
       // need keyUP to have the latest key registered
       const commandInput = (ev.target as HTMLInputElement).value;
-      const suggestions = this.handler.suggestCommand(commandInput);
-      if (suggestions?.length && ev.code === 'Tab') {
-        this.input.value = suggestions[0] + ' ';
-        this.showSuggestions([suggestions.shift()!]);
-        return;
-      }
       if (ev.code === 'Enter') {
         this.handler.execute(commandInput);
         this.close();
         return;
       }
-      this.showSuggestions(suggestions);
+
+      let commandSuggestions = this.handler.suggestCommand(commandInput);
+      if (commandSuggestions?.length && ev.code === 'Tab') {
+        this.input.value = getCommandSchemaWithoutArguments(commandSuggestions[0]) + ' ';
+        commandSuggestions = [commandSuggestions.shift()!];
+      }
+
+      this.showCommandSuggestions(commandSuggestions);
+      this.showArgumentSuggestions(this.handler.suggestArguments(commandInput));
     });
 
     this.input.addEventListener('click', (ev) => {
       ev.stopPropagation();
     });
-    this.suggestions = document.getElementById('commander-suggestions') as HTMLDivElement;
-    this.suggestions.addEventListener('click', (ev) => {
+    this.commandSuggestions = document.getElementById('commander-cmd-suggestions') as HTMLDivElement;
+    this.commandSuggestions.addEventListener('click', (ev) => {
       ev.stopPropagation();
     });
 
@@ -62,21 +65,21 @@ export default class Widget extends Application {
 
   close(): Promise<void> {
     this.input.value = '';
-    this.suggestions.innerText = '';
-    this.suggestions.style.display = 'none';
+    this.commandSuggestions.innerText = '';
+    this.commandSuggestions.style.display = 'none';
     const widget = document.getElementById('commander');
     if (widget) widget.style.display = 'none';
     return super.close();
   }
 
-  showSuggestions = (suggs?: string[]) => {
-    if (!suggs) {
-      this.suggestions.style.display = 'none';
+  showCommandSuggestions = (cmdSuggestions?: Command[]) => {
+    if (!cmdSuggestions) {
+      this.commandSuggestions.style.display = 'none';
       return;
     }
     let newSuggs: HTMLDivElement[] = [];
-    if (suggs.length === 1) {
-      const command = this.handler.commands.find((c) => c.name === suggs![0])!;
+    if (cmdSuggestions.length === 1) {
+      const command = cmdSuggestions[0];
       const div = document.createElement('div');
       div.className = 'commander-suggestion';
       let schema = `<div>${command.schema}</div>`;
@@ -86,10 +89,11 @@ export default class Widget extends Application {
       $(schema).appendTo(div);
       newSuggs.push(div);
     } else {
-      if (suggs.length === 0) {
-        suggs = ['No matching commands found'];
+      let cmdSuggestionNames = cmdSuggestions.map((c) => getCommandSchemaWithoutArguments(c));
+      if (cmdSuggestions.length === 0) {
+        cmdSuggestionNames = ['No matching commands found'];
       }
-      newSuggs = suggs.map((s) => {
+      newSuggs = cmdSuggestionNames.map((s) => {
         const div = document.createElement('div');
         div.className = 'commander-suggestion';
         div.innerText = s;
@@ -97,8 +101,15 @@ export default class Widget extends Application {
       });
     }
 
-    this.suggestions.replaceChildren(...newSuggs);
-    this.suggestions.style.display = 'flex';
+    this.commandSuggestions.replaceChildren(...newSuggs);
+    this.commandSuggestions.style.display = 'flex';
+  };
+
+  showArgumentSuggestions = (argSuggestions?: Suggestion[]) => {
+    if (argSuggestions?.length) {
+      console.log('parsing arg suggestions');
+      argSuggestions.forEach((arg) => console.log(arg.displayName));
+    }
   };
 
   private setInputPlaceholder() {
@@ -106,4 +117,8 @@ export default class Widget extends Application {
     const n = Math.floor(Math.random() * maxPlaceholder) + 1; // random int
     this.input.placeholder = localize(`Widget.Placeholder${n}`);
   }
+}
+function getCommandSchemaWithoutArguments(command: Command) {
+  const argumentStart = command.schema.indexOf(' ');
+  return command.schema.substring(0, argumentStart > 0 ? argumentStart : command.schema.length);
 }

@@ -3,7 +3,8 @@ import booleanArg from './arguments/booleanArg';
 import numberArg from './arguments/numberArg';
 import rawArg from './arguments/rawArg';
 import stringArg from './arguments/stringArg';
-import Command, { Argument } from './command';
+import Command, { Argument, Suggestion } from './command';
+import openCompendiumCommand from './commands/openCompendium';
 import { getSetting, SETTING } from './settingsConfig';
 import { getGame, MODULE_NAME } from './utils/moduleUtils';
 import { ARGUMENT_TYPES, localize } from './utils/moduleUtils';
@@ -26,15 +27,23 @@ export default class CommandHandler {
     return [...this.commandMap.values()];
   }
 
-  suggestCommand = (input: string): string[] | undefined => {
+  suggestCommand = (input: string): Command[] | undefined => {
     if (!input) return undefined;
     input = input.toLowerCase();
     const firstSpace = input.indexOf(' ');
     const command = firstSpace < 1 ? input : input.substring(0, firstSpace);
     const allowedCommands = [...this.commandMap.values()].filter((c) => !c.allow || c.allow());
-    return allowedCommands
-      .map((c) => c.name)
-      .filter((c) => c.toLowerCase().trim().startsWith(command.replace(/$.*/, '')));
+    return allowedCommands.filter((c) => c.name.toLowerCase().trim().startsWith(command.replace(/$.*/, '')));
+  };
+
+  suggestArguments = (input: string): Suggestion[] | undefined => {
+    const commands = this.suggestCommand(input);
+    if (!commands || commands.length != 1) return; // none or more than one command found, don't suggest arguments
+    const command = commands[0];
+    const arg = command.args[0];
+    if (command.args[0].suggestions) {
+      return arg.suggestions!();
+    }
   };
 
   execute = async (input: string) => {
