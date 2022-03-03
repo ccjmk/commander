@@ -15,6 +15,7 @@ export default class Widget extends Application {
 
   private input!: HTMLInputElement;
   private commandSuggestions!: HTMLDivElement;
+  private argumentSuggestions!: HTMLDivElement;
 
   activateListeners() {
     this.input = document.getElementById('commander-input') as HTMLInputElement;
@@ -47,6 +48,10 @@ export default class Widget extends Application {
     });
     this.commandSuggestions = document.getElementById('commander-cmd-suggestions') as HTMLDivElement;
     this.commandSuggestions.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+    });
+    this.argumentSuggestions = document.getElementById('commander-args-suggestions') as HTMLDivElement;
+    this.argumentSuggestions.addEventListener('click', (ev) => {
       ev.stopPropagation();
     });
 
@@ -106,10 +111,28 @@ export default class Widget extends Application {
   };
 
   showArgumentSuggestions = (argSuggestions?: Suggestion[]) => {
+    if (!argSuggestions) {
+      this.argumentSuggestions.style.display = 'none';
+      return;
+    }
+    let newSuggs: HTMLDivElement[] = [];
     if (argSuggestions?.length) {
       console.log('parsing arg suggestions');
       argSuggestions.forEach((arg) => console.log(arg.displayName));
+      if (argSuggestions.length > 5) {
+        // if the array is too big, cut it at 5th position and append a ...
+        argSuggestions.splice(4, argSuggestions.length - 4, { displayName: '...' });
+      }
+      newSuggs = argSuggestions.map((arg) => {
+        const div = document.createElement('div');
+        div.className = 'commander-suggestion';
+        div.innerText = arg.displayName;
+        return div;
+      });
     }
+
+    this.argumentSuggestions.replaceChildren(...newSuggs);
+    this.argumentSuggestions.style.display = 'flex';
   };
 
   private setInputPlaceholder() {
