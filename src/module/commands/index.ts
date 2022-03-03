@@ -14,6 +14,7 @@ import newOwnedCommand from './newOwned';
 import openSheetByNameCommand from './openSheetByName';
 import openSheetByPlayerCommand from './openSheetByPlayer';
 import showAllowedCommand from './showAllowedCommands';
+import suggestionsCommand from './examples/suggestionsExample';
 
 const registerCommands = (register: (command: Command) => void) => {
   // TODO move these to README in JS form
@@ -33,6 +34,7 @@ const registerCommands = (register: (command: Command) => void) => {
   register(openMacroCommand);
   register(editMacroCommand);
   register(showAllowedCommand);
+  register(suggestionsCommand);
 };
 
 export default registerCommands;

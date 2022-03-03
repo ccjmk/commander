@@ -4,7 +4,6 @@ import numberArg from './arguments/numberArg';
 import rawArg from './arguments/rawArg';
 import stringArg from './arguments/stringArg';
 import Command, { Argument, Suggestion } from './command';
-import openCompendiumCommand from './commands/openCompendium';
 import { getSetting, SETTING } from './settingsConfig';
 import { getGame, MODULE_NAME } from './utils/moduleUtils';
 import { ARGUMENT_TYPES, localize } from './utils/moduleUtils';
@@ -28,7 +27,8 @@ export default class CommandHandler {
   }
 
   suggestCommand = (input: string): Command[] | undefined => {
-    if (!input) return undefined;
+    input = sanitizeInput(input);
+    if (!input) return;
     input = input.toLowerCase();
     const firstSpace = input.indexOf(' ');
     const command = firstSpace < 1 ? input : input.substring(0, firstSpace);
@@ -37,12 +37,27 @@ export default class CommandHandler {
   };
 
   suggestArguments = (input: string): Suggestion[] | undefined => {
+    input = sanitizeInput(input);
     const commands = this.suggestCommand(input);
     if (!commands || commands.length != 1) return; // none or more than one command found, don't suggest arguments
     const command = commands[0];
-    const arg = command.args[0];
-    if (command.args[0].suggestions) {
-      return arg.suggestions!();
+    const inputRegex = `([a-zA-Z0-9]+|"[^"]+"|'[^']+')* *`; // search for words with or without quotes (single or double) followed by an optional space
+    const regex = getCommandSchemaWithoutArguments(command) + ' ' + inputRegex.repeat(command.args.length);
+    const tokens = input.match(regex)?.filter(Boolean).splice(1) ?? [];
+
+    console.clear();
+    console.log(regex);
+    console.log(tokens);
+    const offset = input.endsWith(' ') ? 0 : 1; //if no space at the end, we offset by 2 to show suggestions from Nth argument, else we want to show suggestions for Nth+1 argument
+    if (tokens.length < offset) return;
+    const arg = command.args[tokens.length - offset];
+    if (arg.type === ARGUMENT_TYPES.BOOLEAN) {
+      return ['true', 'on', 'false', 'off'].map((s) => ({ displayName: s }));
+    }
+    if (arg?.suggestions) {
+      const filter = !input.endsWith(' ') ? tokens.at(-1) : undefined;
+      const suggs = arg.suggestions!();
+      return filter ? suggs.filter((s) => s.displayName.startsWith(filter)) : suggs;
     }
   };
 
@@ -117,14 +132,19 @@ export default class CommandHandler {
   }
 }
 
-function buildRegex(schema: Command['schema'], args: Command['args']) {
+const sanitizeInput = (input: string) => {
+  // TODO remove extra spaces not between quotes
+  return input;
+};
+
+const buildRegex = (schema: Command['schema'], args: Command['args']) => {
   let reg = schema;
   for (const arg of args) {
     const argumentType = argumentMap.get(arg.type)!;
     reg = reg.replace('$' + arg.name, argumentType.replace);
   }
   return reg;
-}
+};
 
 function isValidCommand(command: any): command is Command {
   isValidStringField(command.name, 'name');
@@ -199,4 +219,9 @@ function isValidRole(role: string): role is keyof typeof CONST.USER_ROLES {
 
 function isValidPermission(permission: string): permission is keyof typeof CONST.USER_PERMISSIONS {
   return Object.keys(CONST.USER_PERMISSIONS).includes(permission);
+}
+
+function getCommandSchemaWithoutArguments(command: Command) {
+  const argumentStart = command.schema.indexOf(' ');
+  return command.schema.substring(0, argumentStart > 0 ? argumentStart : command.schema.length);
 }
