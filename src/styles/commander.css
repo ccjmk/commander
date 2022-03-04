@@ -22,6 +22,14 @@
   top: -25px;
 }
 
+#commander-cmd-suggestions {
+  top: -25px;
+}
+
+#commander-args-suggestions {
+  top: 50px;
+}
+
 .commander-modal .commander-suggestions .commander-suggestion {
   font-size: large;
   border-radius: 5px;

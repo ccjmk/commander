@@ -9,6 +9,9 @@ const openCompendiumCommand: Command = {
     {
       name: 'title',
       type: ARGUMENT_TYPES.STRING,
+      suggestions: () => {
+        return getGame().packs.map((p) => ({ displayName: p.title }));
+      },
     },
   ],
   handler: ({ title }) => {
