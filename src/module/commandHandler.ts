@@ -4,7 +4,8 @@ import numberArg from './arguments/numberArg';
 import rawArg from './arguments/rawArg';
 import stringArg from './arguments/stringArg';
 import Command, { Argument, Suggestion } from './command';
-import { getSetting, SETTING } from './settingsConfig';
+import { getSetting, SETTING } from './settings';
+import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
 import { getGame, MODULE_NAME } from './utils/moduleUtils';
 import { ARGUMENT_TYPES, localize } from './utils/moduleUtils';
 
@@ -215,9 +216,4 @@ function isValidRole(role: string): role is keyof typeof CONST.USER_ROLES {
 
 function isValidPermission(permission: string): permission is keyof typeof CONST.USER_PERMISSIONS {
   return Object.keys(CONST.USER_PERMISSIONS).includes(permission);
-}
-
-function getCommandSchemaWithoutArguments(command: Command) {
-  const argumentStart = command.schema.indexOf(' ');
-  return command.schema.substring(0, argumentStart > 0 ? argumentStart : command.schema.length);
 }

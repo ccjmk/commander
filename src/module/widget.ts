@@ -1,5 +1,6 @@
 import Command, { Suggestion } from './command';
 import CommandHandler from './commandHandler';
+import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
 import { MODULE_NAME, localize } from './utils/moduleUtils';
 
 export default class Widget extends Application {
@@ -151,8 +152,4 @@ export default class Widget extends Application {
     const n = Math.floor(Math.random() * maxPlaceholder) + 1; // random int
     this.input.placeholder = localize(`Widget.Placeholder${n}`);
   }
-}
-function getCommandSchemaWithoutArguments(command: Command) {
-  const argumentStart = command.schema.indexOf(' ');
-  return command.schema.substring(0, argumentStart > 0 ? argumentStart : command.schema.length);
 }
