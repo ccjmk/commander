@@ -39,16 +39,12 @@ export default class CommandHandler {
   suggestArguments = (input: string): Suggestion[] | undefined => {
     input = sanitizeInput(input);
     const commands = this.suggestCommand(input);
-    if (!commands || commands.length != 1) return; // none or more than one command found, don't suggest arguments
+    if (commands?.length != 1) return; // none or more than one command found, don't suggest arguments
     const command = commands[0];
     const inputRegex = `([a-zA-Z0-9]+|"[^"]+"|'[^']+')* *`; // search for words with or without quotes (single or double) followed by an optional space
     const regex = getCommandSchemaWithoutArguments(command) + ' ' + inputRegex.repeat(command.args.length);
     const tokens = input.match(regex)?.filter(Boolean).splice(1) ?? [];
-
-    console.clear();
-    console.log(regex);
-    console.log(tokens);
-    const offset = input.endsWith(' ') ? 0 : 1; //if no space at the end, we offset by 2 to show suggestions from Nth argument, else we want to show suggestions for Nth+1 argument
+    const offset = input.endsWith(' ') ? 0 : 1; // if no space at the end, we show suggestions from Nth argument, else we want to show suggestions for Nth+1 argument
     if (tokens.length < offset) return;
     const arg = command.args[tokens.length - offset];
     if (arg.type === ARGUMENT_TYPES.BOOLEAN) {

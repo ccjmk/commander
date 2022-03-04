@@ -131,13 +131,13 @@ export default class Widget extends Application {
         const div = document.createElement('div');
         div.className = 'commander-suggestion';
         div.innerText = arg.displayName.indexOf(' ') > -1 ? `"${arg.displayName}"` : arg.displayName;
-        div.addEventListener('click', (e) => {
-          const suggestion = (e.target as HTMLElement).innerHTML;
-          if (suggestion !== tooManyPlaceholder) {
-            this.input.value = `${getCommandSchemaWithoutArguments(this.command!)} ${suggestion}`; // if we have argument suggestions 'command' is set
-          }
-          this.input.focus();
-        });
+        // div.addEventListener('click', (e) => { // TODO consider how to appropriately build into the existing input value without replacing already-written args before
+        //   const suggestion = (e.target as HTMLElement).innerHTML;
+        //   if (suggestion !== tooManyPlaceholder) {
+        //     this.input.value = `${getCommandSchemaWithoutArguments(this.command!)} ${suggestion}`; // if we have argument suggestions 'command' is set
+        //   }
+        //   this.input.focus();
+        // });
         return div;
       });
     }
