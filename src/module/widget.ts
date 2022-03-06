@@ -43,8 +43,8 @@ export default class Widget extends Application {
         }
       }
 
-      this.showCommandSuggestions(commandSuggestions);
-      this.showArgumentSuggestions(this.handler.suggestArguments(this.input.value));
+      this.renderCommandSuggestions(commandSuggestions);
+      this.renderArgumentSuggestions(this.handler.suggestArguments(this.input.value));
     });
 
     this.input.addEventListener('click', (ev) => {
@@ -81,7 +81,7 @@ export default class Widget extends Application {
     return super.close();
   }
 
-  showCommandSuggestions = (cmdSuggestions?: Command[]) => {
+  renderCommandSuggestions = (cmdSuggestions?: Command[]) => {
     if (!cmdSuggestions) {
       this.commandSuggestions.style.display = 'none';
       return;
@@ -114,7 +114,7 @@ export default class Widget extends Application {
     this.commandSuggestions.style.display = 'flex';
   };
 
-  showArgumentSuggestions = (argSuggestions?: Suggestion[]) => {
+  renderArgumentSuggestions = (argSuggestions?: Suggestion[]) => {
     if (!argSuggestions) {
       this.argumentSuggestions.style.display = 'none';
       return;
@@ -129,10 +129,16 @@ export default class Widget extends Application {
       newSuggs = argSuggestions.map((arg) => {
         const div = document.createElement('div');
         div.className = 'commander-suggestion';
-        if (arg.html) {
-          div.innerHTML = arg.content;
-        } else {
-          div.innerText = arg.content.indexOf(' ') > -1 ? `"${arg.content}"` : arg.content;
+        div.innerText = arg.content.indexOf(' ') > -1 ? `"${arg.content}"` : arg.content;
+        if (arg.icon) {
+          const icon = document.createElement('i');
+          icon.className = `${arg.icon} commander-suggestion-img`;
+          div.prepend(icon);
+        } else if (arg.img) {
+          const img = document.createElement('img');
+          img.className = 'suggestion-img';
+          img.setAttribute('src', arg.img);
+          div.prepend(img);
         }
         // div.addEventListener('click', (e) => { // TODO consider how to appropriately build into the existing input value without replacing already-written args before
         //   const suggestion = (e.target as HTMLElement).innerHTML;

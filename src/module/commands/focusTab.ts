@@ -10,7 +10,10 @@ const focusTabCommand: Command = {
       name: 'tab',
       type: ARGUMENT_TYPES.STRING,
       suggestions: () => {
-        return Object.keys(ui.sidebar?.tabs ?? {}).map((c) => ({ content: c }));
+        return Object.keys(ui.sidebar?.tabs ?? {}).map((c) => {
+          const i = 'fas fa-users';
+          return { content: c, icon: c === 'cards' ? '' : i };
+        });
       },
     },
   ],
