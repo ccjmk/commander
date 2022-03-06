@@ -1,4 +1,5 @@
 import Command from '../command';
+import { hasRole } from '../commandHandler';
 import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
 const openCompendiumCommand: Command = {
@@ -14,6 +15,7 @@ const openCompendiumCommand: Command = {
       },
     },
   ],
+  allow: () => hasRole('GAMEMASTER'),
   handler: ({ title }) => {
     const c = getGame().packs.find((p) => p.title.localeCompare(title, undefined, { sensitivity: 'base' }) === 0);
     if (!c) {

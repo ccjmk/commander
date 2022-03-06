@@ -9,10 +9,13 @@ const openSheetByNameCommand: Command = {
     {
       name: 'actor',
       type: ARGUMENT_TYPES.STRING,
+      suggestions: () => {
+        return Array.from(getGame().actors?.values() ?? []).map((a) => ({ displayName: a.name! }));
+      },
     },
   ],
   handler: ({ actor }) => {
-    const sheet = getGame().users!.getName(actor)?.character?.sheet;
+    const sheet = getGame().actors!.getName(actor)?.sheet;
     if (!sheet) {
       const msg = `Actor "${actor}" undefined`;
       ui.notifications?.error(msg);

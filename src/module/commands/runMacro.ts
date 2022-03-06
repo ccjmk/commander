@@ -1,7 +1,7 @@
 import Command from '../command';
 import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
 
-const openMacroCommand: Command = {
+const runMacroCommand: Command = {
   name: 'macro',
   description: 'executes a macro by name',
   schema: 'macro $name',
@@ -9,6 +9,9 @@ const openMacroCommand: Command = {
     {
       name: 'name',
       type: ARGUMENT_TYPES.STRING,
+      suggestions: () => {
+        return Array.from(getGame().macros?.values() ?? []).map((u) => ({ displayName: u.name! }));
+      },
     },
   ],
   handler: ({ name }) => {
@@ -20,4 +23,4 @@ const openMacroCommand: Command = {
     macro.execute();
   },
 };
-export default openMacroCommand;
+export default runMacroCommand;

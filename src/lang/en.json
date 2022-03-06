@@ -12,6 +12,7 @@
       }
     },
     "Handler": {
+      "RetrievingCommands": "Retrieving persisted commands from module settings",
       "Exec": {
         "DebugRegex": "Regex for {commandName} ([ ] not part of regex): [{regex}]",
         "DebugRunningWithArgs": "Executing '{commandName}' with args: {paramObj}`",
@@ -21,6 +22,7 @@
         "NoGmAttempt": "Running commands disabled for non-GMs by module setting"
       },
       "Reg": {
+        "DebugNotReplaced": "Skipping existing command {commandName} for non-replacing registration",
         "CommandRegistered": "Command '{commandName}' registered successfully",
         "CommandAlreadyExists": "Command '{commandName}' already exists",
         "InvalidString": "Unable to register command with incorrect data - '{fieldName}' required",

@@ -45,7 +45,7 @@ export default class Widget extends Application {
       }
 
       this.showCommandSuggestions(commandSuggestions);
-      this.showArgumentSuggestions(this.handler.suggestArguments(commandInput));
+      this.showArgumentSuggestions(this.handler.suggestArguments(this.input.value));
     });
 
     this.input.addEventListener('click', (ev) => {

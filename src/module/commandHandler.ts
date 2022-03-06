@@ -21,6 +21,8 @@ export default class CommandHandler {
 
   constructor() {
     this.commandMap = new Map<string, Command>();
+    // console.log(`${MODULE_NAME} | ${localize('Handler.RetrievingCommands')}`);
+    // retrieveCommandsFromModuleSetting().forEach(c => this._register(c, false, true));
   }
 
   get commands(): Command[] {
@@ -33,8 +35,12 @@ export default class CommandHandler {
     input = input.toLowerCase();
     const firstSpace = input.indexOf(' ');
     const command = firstSpace < 1 ? input : input.substring(0, firstSpace);
-    const allowedCommands = [...this.commandMap.values()].filter((c) => !c.allow || c.allow());
-    return allowedCommands.filter((c) => c.name.toLowerCase().trim().startsWith(command.replace(/$.*/, '')));
+    try {
+      const allowedCommands = [...this.commandMap.values()].filter((c) => !c.allow || c.allow());
+      return allowedCommands.filter((c) => c.name.toLowerCase().trim().startsWith(command.replace(/$.*/, '')));
+    } catch (err) {
+      console.error(err); // TODO i18n this
+    }
   };
 
   suggestArguments = (input: string): Suggestion[] | undefined => {
@@ -42,19 +48,29 @@ export default class CommandHandler {
     const commands = this.suggestCommand(input);
     if (commands?.length != 1) return; // none or more than one command found, don't suggest arguments
     const command = commands[0];
-    const inputRegex = `([a-zA-Z0-9]+|"[^"]+"|'[^']+')* *`; // search for words with or without quotes (single or double) followed by an optional space
-    const regex = getCommandSchemaWithoutArguments(command) + ' ' + inputRegex.repeat(command.args.length);
-    const tokens = input.match(regex)?.filter(Boolean).splice(1) ?? [];
+    const inputRegex = `([a-zA-Z0-9]+|"[^"]+"|'[^']+')? *`; // search for words with or without quotes (single or double) followed by an optional space
+    const regex =
+      escapeCharactersForRegex(getCommandSchemaWithoutArguments(command)) +
+      ' *' +
+      inputRegex.repeat(command.args.length);
+    const tokensWithCmd = input.match(regex)?.filter(Boolean) ?? [];
+    if (!tokensWithCmd.length) return;
+
     const offset = input.endsWith(' ') ? 0 : 1; // if no space at the end, we show suggestions from Nth argument, else we want to show suggestions for Nth+1 argument
-    if (tokens.length < offset) return;
-    const arg = command.args[tokens.length - offset];
-    if (arg.type === ARGUMENT_TYPES.BOOLEAN) {
-      return ['true', 'on', 'false', 'off'].map((s) => ({ displayName: s }));
-    }
-    if (arg?.suggestions) {
-      const filter = !input.endsWith(' ') ? tokens.at(-1) : undefined;
-      const suggs = arg.suggestions!();
-      return filter ? suggs.filter((s) => s.displayName.startsWith(filter)) : suggs;
+    const argumentTokens = [...tokensWithCmd].splice(1);
+    const arg = command.args[argumentTokens.length - offset];
+
+    if (arg?.suggestions || arg?.type === ARGUMENT_TYPES.BOOLEAN) {
+      const filter = !input.endsWith(' ') ? argumentTokens.at(-1) : undefined;
+      try {
+        const suggs =
+          arg?.type === ARGUMENT_TYPES.BOOLEAN
+            ? ['true', 'on', 'false', 'off'].map((s) => ({ displayName: s }))
+            : arg.suggestions!();
+        return filter ? suggs.filter((s) => s.displayName.toLowerCase().startsWith(filter.toLowerCase())) : suggs;
+      } catch (err) {
+        console.error(err); // TODO i18n this
+      }
     }
   };
 
@@ -107,18 +123,32 @@ export default class CommandHandler {
             }),
         );
       }
-      return await command.handler(paramObj);
+      try {
+        return await command.handler(paramObj);
+      } catch (err) {
+        console.error(err); // TODO i18n
+      }
+    } else {
+      ui.notifications?.warn(localize('Handler.Exec.ArgumentsDontMatch', { commandName: command.name }));
     }
-    ui.notifications?.warn(localize('Handler.Exec.ArgumentsDontMatch', { commandName: command.name }));
   };
 
   register = (command: unknown, replace?: boolean) => {
+    this._register(command, replace, false);
+  };
+
+  _register = (command: unknown, replace?: boolean, silentError?: boolean) => {
+    const debugMode = getSetting(SETTING.DEBUG);
+
     if (!isValidCommand(command)) return;
     if (this.commandMap.get(command.name) && !replace) {
+      if (debugMode) console.warn(localize('Handler.Reg.DebugNotReplaced', { commandName: command.name }));
+      if (silentError) return;
       throw new Error(localize('Handler.Reg.CommandAlreadyExists', { commandName: command.name }));
     }
     this.regexCache.set(command, buildRegex(command.schema, command.args));
     this.commandMap.set(command.name.trim(), command);
+    // persistCommandInLocalStorage(command);
     console.log(localize('Handler.Reg.CommandRegistered', { commandName: command.name }));
   };
 
@@ -196,18 +226,14 @@ export const hasPermissions = (...permissions: string[]) => {
     if (!isValidPermission(p)) throw new Error(localize('Handler.Reg.InvalidPermission', { permission: p }));
     checkedPermissions.push(p);
   }
-  return () => {
-    const g = getGame();
-    if (!g || !g.permissions) return false;
-    return checkedPermissions.every((p) => g.permissions![p].includes(g.user!.role));
-  };
+  const g = getGame();
+  if (!g || !g.permissions) return false;
+  return checkedPermissions.every((p) => g.permissions![p].includes(g.user!.role));
 };
 
-export const hasRole = (role: string) => {
+export const hasRole = (role: keyof typeof CONST.USER_ROLES) => {
   if (!isValidRole(role)) throw new Error(localize('Handler.Reg.InvalidRole', { role }));
-  return () => {
-    return getGame().user?.hasRole(role) ?? false;
-  };
+  return getGame().user?.hasRole(role) ?? false;
 };
 
 function isValidRole(role: string): role is keyof typeof CONST.USER_ROLES {
@@ -216,4 +242,7 @@ function isValidRole(role: string): role is keyof typeof CONST.USER_ROLES {
 
 function isValidPermission(permission: string): permission is keyof typeof CONST.USER_PERMISSIONS {
   return Object.keys(CONST.USER_PERMISSIONS).includes(permission);
+}
+function escapeCharactersForRegex(input: string) {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
