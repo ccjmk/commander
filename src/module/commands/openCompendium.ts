@@ -11,7 +11,7 @@ const openCompendiumCommand: Command = {
       name: 'title',
       type: ARGUMENT_TYPES.STRING,
       suggestions: () => {
-        return getGame().packs.map((p) => ({ displayName: p.title }));
+        return getGame().packs.map((p) => ({ content: p.title }));
       },
     },
   ],

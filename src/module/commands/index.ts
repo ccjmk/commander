@@ -4,7 +4,7 @@ import runMacroCommand from './runMacro';
 import openSheetByNameCommand from './openSheetByName';
 import openSheetByPlayerCommand from './openSheetByPlayer';
 import showAllowedCommand from './showAllowedCommands';
-import suggestionsCommand from './examples/suggestionsExample';
+import focusTabCommand from './focusTab';
 
 const registerCommands = (register: (command: Command, replace: boolean, silentError: boolean) => void) => {
   register(openSheetByNameCommand, false, true);
@@ -12,7 +12,7 @@ const registerCommands = (register: (command: Command, replace: boolean, silentE
   register(openCompendiumCommand, false, true);
   register(runMacroCommand, false, true);
   register(showAllowedCommand, false, true);
-  register(suggestionsCommand, false, true);
+  register(focusTabCommand, false, true);
 };
 
 export default registerCommands;

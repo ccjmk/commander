@@ -10,7 +10,7 @@ const openSheetByPlayerCommand: Command = {
       name: 'player',
       type: ARGUMENT_TYPES.STRING,
       suggestions: () => {
-        return Array.from(getGame().users?.values() ?? []).map((u) => ({ displayName: u.name! }));
+        return Array.from(getGame().users?.values() ?? []).map((u) => ({ content: u.name! }));
       },
     },
   ],

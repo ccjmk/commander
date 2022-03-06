@@ -1,4 +1,5 @@
-import Command, { Suggestion } from './command';
+import Command from './command';
+import Suggestion from './suggestion';
 import CommandHandler from './commandHandler';
 import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
 import { MODULE_NAME, localize } from './utils/moduleUtils';
@@ -17,7 +18,6 @@ export default class Widget extends Application {
   private input!: HTMLInputElement;
   private commandSuggestions!: HTMLDivElement;
   private argumentSuggestions!: HTMLDivElement;
-  private command?: Command;
 
   activateListeners() {
     this.input = document.getElementById('commander-input') as HTMLInputElement;
@@ -37,7 +37,6 @@ export default class Widget extends Application {
 
       let commandSuggestions = this.handler.suggestCommand(commandInput);
       if (commandSuggestions?.length) {
-        this.command = commandSuggestions[0]; // save 1st command as potential/command to be executed
         if (ev.code === 'Tab') {
           this.input.value = getCommandSchemaWithoutArguments(commandSuggestions[0]) + ' ';
           commandSuggestions = [commandSuggestions.shift()!];
@@ -123,15 +122,18 @@ export default class Widget extends Application {
     let newSuggs: HTMLDivElement[] = [];
     const tooManyPlaceholder = '...';
     if (argSuggestions?.length) {
-      argSuggestions.forEach((arg) => console.log(arg.displayName));
       if (argSuggestions.length > 5) {
         // if the array is too big, cut it at 5th position and append a ...
-        argSuggestions.splice(4, argSuggestions.length - 4, { displayName: tooManyPlaceholder });
+        argSuggestions.splice(4, argSuggestions.length - 4, { content: tooManyPlaceholder });
       }
       newSuggs = argSuggestions.map((arg) => {
         const div = document.createElement('div');
         div.className = 'commander-suggestion';
-        div.innerText = arg.displayName.indexOf(' ') > -1 ? `"${arg.displayName}"` : arg.displayName;
+        if (arg.html) {
+          div.innerHTML = arg.content;
+        } else {
+          div.innerText = arg.content.indexOf(' ') > -1 ? `"${arg.content}"` : arg.content;
+        }
         // div.addEventListener('click', (e) => { // TODO consider how to appropriately build into the existing input value without replacing already-written args before
         //   const suggestion = (e.target as HTMLElement).innerHTML;
         //   if (suggestion !== tooManyPlaceholder) {

@@ -11,14 +11,14 @@ const suggestionsCommand: Command = {
       suggestions: () => {
         const users = getGame().users?.values();
         if (!users) return [];
-        return [...users].map((u) => ({ displayName: u.name! }));
+        return [...users].map((u) => ({ content: u.name! }));
       },
     },
     {
       name: 'level',
       type: ARGUMENT_TYPES.NUMBER,
       suggestions: () => {
-        return Array.fromRange(20).map((n) => ({ displayName: n + 1 + '' }));
+        return Array.fromRange(20).map((n) => ({ content: n + 1 + '' }));
       },
     },
     {

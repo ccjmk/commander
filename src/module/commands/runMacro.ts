@@ -10,7 +10,7 @@ const runMacroCommand: Command = {
       name: 'name',
       type: ARGUMENT_TYPES.STRING,
       suggestions: () => {
-        return Array.from(getGame().macros?.values() ?? []).map((u) => ({ displayName: u.name! }));
+        return Array.from(getGame().macros?.values() ?? []).map((u) => ({ content: u.name! }));
       },
     },
   ],

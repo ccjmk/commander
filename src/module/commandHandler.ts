@@ -3,7 +3,9 @@ import booleanArg from './arguments/booleanArg';
 import numberArg from './arguments/numberArg';
 import rawArg from './arguments/rawArg';
 import stringArg from './arguments/stringArg';
-import Command, { Argument, Suggestion } from './command';
+import Command from './command';
+import Argument from './argument';
+import Suggestion from './suggestion';
 import { getSetting, SETTING } from './settings';
 import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
 import { getGame, MODULE_NAME } from './utils/moduleUtils';
@@ -65,9 +67,9 @@ export default class CommandHandler {
       try {
         const suggs =
           arg?.type === ARGUMENT_TYPES.BOOLEAN
-            ? ['true', 'on', 'false', 'off'].map((s) => ({ displayName: s }))
+            ? ['true', 'on', 'false', 'off'].map((s) => ({ content: s }))
             : arg.suggestions!();
-        return filter ? suggs.filter((s) => s.displayName.toLowerCase().startsWith(filter.toLowerCase())) : suggs;
+        return filter ? suggs.filter((s) => s.content.toLowerCase().startsWith(filter.toLowerCase())) : suggs;
       } catch (err) {
         console.error(err); // TODO i18n this
       }
