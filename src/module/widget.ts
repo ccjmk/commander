@@ -3,6 +3,7 @@ import Suggestion from './suggestion';
 import CommandHandler from './commandHandler';
 import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
 import { MODULE_NAME, localize } from './utils/moduleUtils';
+import { getSetting, SETTING } from './settings';
 
 const ACTIVE = 'active';
 export default class Widget extends Application {
@@ -221,10 +222,11 @@ export default class Widget extends Application {
     }
     let newSuggs: HTMLDivElement[] = [];
     const tooManyPlaceholder = '...';
+    const maxSuggestions = getSetting(SETTING.MAX_SUGGESTIONS) as number;
     if (argSuggestions?.length) {
-      if (argSuggestions.length > 5) {
-        // if the array is too big, cut it at 5th position and append a ...
-        argSuggestions.splice(4, argSuggestions.length - 4, { content: tooManyPlaceholder });
+      if (argSuggestions.length > maxSuggestions) {
+        // if the array is too big, cut it at MAXth position and append a ...
+        argSuggestions.splice(maxSuggestions, argSuggestions.length - maxSuggestions, { content: tooManyPlaceholder });
       }
       newSuggs = argSuggestions.map((arg) => {
         const div = document.createElement('div');
@@ -237,7 +239,7 @@ export default class Widget extends Application {
           div.prepend(icon);
         } else if (arg.img) {
           const img = document.createElement('img');
-          img.className = 'suggestion-img';
+          img.className = 'commander-suggestion-img';
           img.setAttribute('src', arg.img);
           div.prepend(img);
         }

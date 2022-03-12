@@ -32,6 +32,7 @@ export default class CommandHandler {
   }
 
   suggestCommand = (input: string): Command[] | undefined => {
+    if (startsWithOverride(input)) return; // ignore chat rolls
     input = sanitizeInput(input);
     if (!input) return;
     input = input.toLowerCase();
@@ -46,6 +47,7 @@ export default class CommandHandler {
   };
 
   suggestArguments = (input: string): Suggestion[] | undefined => {
+    if (startsWithOverride(input)) return; // ignore chat rolls
     input = sanitizeInput(input);
     const commands = this.suggestCommand(input);
     if (commands?.length != 1) return; // none or more than one command found, don't suggest arguments
@@ -82,6 +84,14 @@ export default class CommandHandler {
 
     if (getSetting(SETTING.ONLY_GM) && !getGame().user?.isGM) {
       ui.notifications?.error(localize('Handler.Exec.NoGmAttempt'));
+      return;
+    }
+
+    if (startsWithOverride(input)) {
+      // send to chat directly
+      if (input.startsWith(':')) input = input.substring(1); // if starts with : remove it to send the text only
+      // @ts-expect-error processMessage marked as protected
+      ui.chat?.processMessage(input); // send input to be processed by foundry
       return;
     }
 
@@ -151,7 +161,7 @@ export default class CommandHandler {
     this.regexCache.set(command, buildRegex(command.schema, command.args));
     this.commandMap.set(command.name.trim(), command);
     // persistCommandInLocalStorage(command);
-    console.log(localize('Handler.Reg.CommandRegistered', { commandName: command.name }));
+    if (debugMode) console.log(localize('Handler.Reg.CommandRegistered', { commandName: command.name }));
   };
 
   private getCommand(input: string): Command | undefined {
@@ -174,6 +184,10 @@ const buildRegex = (schema: Command['schema'], args: Command['args']) => {
   }
   return reg;
 };
+
+function startsWithOverride(input: string) {
+  return input.startsWith('/') || input.startsWith(':');
+}
 
 function isValidCommand(command: any): command is Command {
   isValidStringField(command.name, 'name');

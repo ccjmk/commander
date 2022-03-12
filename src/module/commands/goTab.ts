@@ -1,19 +1,20 @@
 import Command from '../command';
 import { ARGUMENT_TYPES } from '../utils/moduleUtils';
 
-const focusTabCommand: Command = {
-  name: 'focus',
+const goTabCommand: Command = {
+  name: 'go',
   description: 'Switches rightside tab (and focuses input for Chat tab)',
-  schema: 'focus $tab',
+  schema: 'go $tab',
   args: [
     {
       name: 'tab',
       type: ARGUMENT_TYPES.STRING,
       suggestions: () => {
-        return Object.keys(ui.sidebar?.tabs ?? {}).map((c) => {
-          const i = 'fas fa-users';
-          return { content: c, icon: c === 'cards' ? '' : i };
-        });
+        const nav = document.querySelector('nav#sidebar-tabs');
+        return Object.keys(ui.sidebar?.tabs ?? {}).map((content) => ({
+          content,
+          icon: nav?.querySelector(`[data-tab="${content}"] i`)?.className,
+        }));
       },
     },
   ],
@@ -25,4 +26,4 @@ const focusTabCommand: Command = {
     }
   },
 };
-export default focusTabCommand;
+export default goTabCommand;

@@ -9,6 +9,10 @@
       "OnlyGM": {
         "Name": "Restrict to GM only",
         "Hint": "Overrides command permissions to allow commands only for the Gamemaster"
+      },
+      "MaxSuggestions": {
+        "Name": "Max suggestions",
+        "Hint": "Maximum number of suggestions to show under the command prompt"
       }
     },
     "Handler": {

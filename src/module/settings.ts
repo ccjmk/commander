@@ -3,6 +3,7 @@ import { MODULE_NAME, MODULE_NAMESPACE, getGame, localize } from './utils/module
 export const enum SETTING {
   DEBUG = 'debug',
   ONLY_GM = 'onlyGM',
+  MAX_SUGGESTIONS = 'maxSuggestions',
 }
 
 export function registerSettings(): void {
@@ -23,6 +24,15 @@ export function registerSettings(): void {
     config: true,
     type: Boolean,
     default: false,
+  });
+
+  getGame().settings.register(MODULE_NAMESPACE, SETTING.MAX_SUGGESTIONS, {
+    name: localize('Settings.MaxSuggestions.Name'),
+    hint: localize('Settings.MaxSuggestions.Hint'),
+    scope: 'world',
+    config: true,
+    type: Number,
+    default: 5,
   });
 }
 
