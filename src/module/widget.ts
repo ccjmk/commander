@@ -37,22 +37,15 @@ export default class Widget extends Application {
 
       if (code === 'Enter') {
         this.handleEnter(commandInput);
-        return;
-      }
-
-      if (code === 'ArrowUp') {
+      } else if (code === 'ArrowUp') {
         this.handleUp();
-        return;
-      }
-
-      if (code === 'ArrowDown') {
+      } else if (code === 'ArrowDown') {
         this.handleDown();
-        return;
+      } else if (code === 'Tab') {
+        this.handleTab(commandInput);
+      } else {
+        this.renderSuggestions(commandInput);
       }
-      if (code === 'Tab') {
-        this.handleTab();
-      }
-      this.renderSuggestions(commandInput);
     });
 
     this.input.addEventListener('click', (ev) => {
@@ -80,8 +73,18 @@ export default class Widget extends Application {
     this.input.focus();
   }
 
-  handleTab(): void {
-    if (this.lastCommandSuggestion.length) {
+  handleTab(commandInput: string): void {
+    let currentSuggestion = this.getSelectedSuggestion();
+    const firstSuggestion = this.getFirstSuggestion();
+
+    if (!currentSuggestion && firstSuggestion) {
+      currentSuggestion = firstSuggestion;
+      this.setSuggestionActive(firstSuggestion, true);
+    }
+
+    if (currentSuggestion) {
+      this.handleEnter(commandInput);
+    } else if (this.lastCommandSuggestion.length) {
       this.input.value = getCommandSchemaWithoutArguments(this.lastCommandSuggestion[0]) + ' ';
       this.renderSuggestions(this.input.value);
     }
@@ -90,7 +93,10 @@ export default class Widget extends Application {
   handleEnter(commandInput: string): void {
     const currentSuggestion = this.getSelectedSuggestion();
     if (currentSuggestion) {
-      const commandInput = `${this.input.value.trim()} ${(currentSuggestion as HTMLElement).dataset.content} `;
+      const index = this.input.value.lastIndexOf(' ');
+      const lastCommand = this.input.value.substring(0, index);
+      const suggestedContent = (currentSuggestion as HTMLElement).dataset.content;
+      const commandInput = `${lastCommand} ${suggestedContent} `;
       this.input.value = commandInput;
       this.setSuggestionActive(currentSuggestion, false);
       this.renderSuggestions(commandInput);
@@ -114,6 +120,7 @@ export default class Widget extends Application {
     }
     return;
   }
+
   handleDown(): void {
     const current = this.getSelectedSuggestion();
     if (current) {
@@ -159,7 +166,7 @@ export default class Widget extends Application {
 
   close(): Promise<void> {
     this.input.value = '';
-    this.commandSuggestions.innerText = '';
+    this.commandSuggestions.replaceChildren();
     this.commandSuggestions.style.display = 'none';
     const widget = document.getElementById('commander');
     if (widget) widget.style.display = 'none';
@@ -209,6 +216,7 @@ export default class Widget extends Application {
   renderArgumentSuggestions = (argSuggestions?: Suggestion[]) => {
     if (!argSuggestions) {
       this.argumentSuggestions.style.display = 'none';
+      this.argumentSuggestions.replaceChildren();
       return;
     }
     let newSuggs: HTMLDivElement[] = [];
