@@ -4,6 +4,7 @@ import CommandHandler from './commandHandler';
 import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
 import { MODULE_NAME, localize } from './utils/moduleUtils';
 
+const ACTIVE = 'active';
 export default class Widget extends Application {
   constructor(private readonly handler: CommandHandler) {
     super({
@@ -18,33 +19,40 @@ export default class Widget extends Application {
   private input!: HTMLInputElement;
   private commandSuggestions!: HTMLDivElement;
   private argumentSuggestions!: HTMLDivElement;
+  private lastCommandSuggestion: Command[] = [];
 
   activateListeners() {
     this.input = document.getElementById('commander-input') as HTMLInputElement;
     this.setInputPlaceholder();
 
     this.input.addEventListener('keydown', (ev) => {
-      if (ev.code === 'Tab') ev.preventDefault();
+      if (ev.code === 'Tab' || ev.code === 'ArrowUp' || ev.code === 'ArrowDown') {
+        ev.preventDefault();
+        return;
+      }
     });
-    this.input.addEventListener('keyup', (ev) => {
+    this.input.addEventListener('keyup', ({ code }) => {
       // need keyUP to have the latest key registered
-      const commandInput = (ev.target as HTMLInputElement).value;
-      if (ev.code === 'Enter') {
-        this.handler.execute(commandInput);
-        this.close();
+      const commandInput = this.input.value;
+
+      if (code === 'Enter') {
+        this.handleEnter(commandInput);
         return;
       }
 
-      let commandSuggestions = this.handler.suggestCommand(commandInput);
-      if (commandSuggestions?.length) {
-        if (ev.code === 'Tab') {
-          this.input.value = getCommandSchemaWithoutArguments(commandSuggestions[0]) + ' ';
-          commandSuggestions = [commandSuggestions.shift()!];
-        }
+      if (code === 'ArrowUp') {
+        this.handleUp();
+        return;
       }
 
-      this.renderCommandSuggestions(commandSuggestions);
-      this.renderArgumentSuggestions(this.handler.suggestArguments(this.input.value));
+      if (code === 'ArrowDown') {
+        this.handleDown();
+        return;
+      }
+      if (code === 'Tab') {
+        this.handleTab();
+      }
+      this.renderSuggestions(commandInput);
     });
 
     this.input.addEventListener('click', (ev) => {
@@ -72,6 +80,83 @@ export default class Widget extends Application {
     this.input.focus();
   }
 
+  handleTab(): void {
+    if (this.lastCommandSuggestion.length) {
+      this.input.value = getCommandSchemaWithoutArguments(this.lastCommandSuggestion[0]) + ' ';
+      this.renderSuggestions(this.input.value);
+    }
+  }
+
+  handleEnter(commandInput: string): void {
+    const currentSuggestion = this.getSelectedSuggestion();
+    if (currentSuggestion) {
+      const commandInput = `${this.input.value.trim()} ${(currentSuggestion as HTMLElement).dataset.content} `;
+      this.input.value = commandInput;
+      this.setSuggestionActive(currentSuggestion, false);
+      this.renderSuggestions(commandInput);
+    } else {
+      this.handler.execute(commandInput);
+      this.close();
+    }
+  }
+
+  handleUp(): void {
+    const current = this.getSelectedSuggestion();
+    if (current) {
+      const prev = this.getPreviousSuggestion(current);
+      if (prev) {
+        this.setSuggestionActive(current, false);
+        this.setSuggestionActive(prev, true);
+      }
+    } else {
+      const lastSuggestion = this.getLastSuggestion();
+      lastSuggestion && this.setSuggestionActive(lastSuggestion, true);
+    }
+    return;
+  }
+  handleDown(): void {
+    const current = this.getSelectedSuggestion();
+    if (current) {
+      const next = this.getNextSuggestion(current);
+      if (next) {
+        this.setSuggestionActive(current, false);
+        this.setSuggestionActive(next, true);
+      }
+    } else {
+      const firstSuggestion = this.getFirstSuggestion();
+      firstSuggestion && this.setSuggestionActive(firstSuggestion, true);
+    }
+    return;
+  }
+
+  setSuggestionActive(suggestion: Element, isActive: boolean): void {
+    if (isActive) {
+      suggestion.classList.add(ACTIVE);
+    } else {
+      suggestion.classList.remove(ACTIVE);
+    }
+  }
+
+  getNextSuggestion(current: Element) {
+    return current.nextElementSibling;
+  }
+
+  getPreviousSuggestion(current: Element) {
+    return current.previousElementSibling;
+  }
+
+  getSelectedSuggestion() {
+    return document.querySelector(`#commander-args-suggestions .${ACTIVE}`);
+  }
+
+  getFirstSuggestion() {
+    return document.querySelector('#commander-args-suggestions .commander-suggestion:first-child');
+  }
+
+  getLastSuggestion() {
+    return document.querySelector('#commander-args-suggestions .commander-suggestion:last-child');
+  }
+
   close(): Promise<void> {
     this.input.value = '';
     this.commandSuggestions.innerText = '';
@@ -79,6 +164,13 @@ export default class Widget extends Application {
     const widget = document.getElementById('commander');
     if (widget) widget.style.display = 'none';
     return super.close();
+  }
+
+  renderSuggestions(commandInput: string) {
+    const commandSuggestions = this.handler.suggestCommand(commandInput);
+    this.renderCommandSuggestions(commandSuggestions);
+    this.renderArgumentSuggestions(this.handler.suggestArguments(this.input.value));
+    this.lastCommandSuggestion = commandSuggestions || [];
   }
 
   renderCommandSuggestions = (cmdSuggestions?: Command[]) => {
@@ -130,6 +222,7 @@ export default class Widget extends Application {
         const div = document.createElement('div');
         div.className = 'commander-suggestion';
         div.innerText = arg.content.indexOf(' ') > -1 ? `"${arg.content}"` : arg.content;
+        div.dataset.content = arg.content;
         if (arg.icon) {
           const icon = document.createElement('i');
           icon.className = `${arg.icon} commander-suggestion-img`;
