@@ -192,7 +192,7 @@ function startsWithOverride(input: string) {
 function isValidCommand(command: any): command is Command {
   isValidStringField(command.name, 'name');
   isValidStringField(command.namespace, 'namespace');
-  isValidStringField(command.description, 'description');
+  isValidStringField(command.description, 'description', true);
   isValidStringField(command.schema, 'schema');
   isArgumentArray(command.args);
   isValidFunction(command.handler);

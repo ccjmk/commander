@@ -256,6 +256,11 @@ export default class Widget extends Application {
 
     this.argumentSuggestions.replaceChildren(...newSuggs);
     this.argumentSuggestions.style.display = 'flex';
+
+    const firstSuggestion = this.getFirstSuggestion();
+    if (firstSuggestion) {
+      this.setSuggestionActive(firstSuggestion, true);
+    }
   };
 
   private setInputPlaceholder() {
