@@ -1,8 +1,9 @@
 import Command from '../command';
-import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
+import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const openSheetByNameCommand: Command = {
   name: 'sheet:name',
+  namespace: MODULE_NAMESPACE,
   description: 'opens/closes the character sheet of a given actor by name.',
   schema: 'sheet:name $actor',
   args: [

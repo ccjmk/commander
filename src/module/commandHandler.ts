@@ -191,6 +191,8 @@ function startsWithOverride(input: string) {
 
 function isValidCommand(command: any): command is Command {
   isValidStringField(command.name, 'name');
+  isValidStringField(command.namespace, 'namespace');
+  isValidStringField(command.description, 'description');
   isValidStringField(command.schema, 'schema');
   isArgumentArray(command.args);
   isValidFunction(command.handler);
@@ -199,7 +201,8 @@ function isValidCommand(command: any): command is Command {
   return true;
 }
 
-const isValidStringField = (field: any, fieldName: string) => {
+const isValidStringField = (field: any, fieldName: string, optional = false) => {
+  if (!field && optional) return;
   if (
     field === undefined ||
     field === null ||

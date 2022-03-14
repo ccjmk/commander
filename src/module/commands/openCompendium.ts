@@ -1,10 +1,11 @@
 import Command from '../command';
 import { hasRole } from '../commandHandler';
-import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
+import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const openCompendiumCommand: Command = {
   name: 'comp',
-  description: 'Opens a compendium by title',
+  namespace: MODULE_NAMESPACE,
+  description: '<b>Opens a compendium by title</b>',
   schema: 'comp $title',
   args: [
     {

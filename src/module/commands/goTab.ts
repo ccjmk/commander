@@ -1,8 +1,9 @@
 import Command from '../command';
-import { ARGUMENT_TYPES } from '../utils/moduleUtils';
+import { ARGUMENT_TYPES, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const goTabCommand: Command = {
   name: 'go',
+  namespace: MODULE_NAMESPACE,
   description: 'Switches rightside tab (and focuses input for Chat tab)',
   schema: 'go $tab',
   args: [

@@ -6,6 +6,7 @@ import openSheetByPlayerCommand from './openSheetByPlayer';
 import showAllowedCommand from './showAllowedCommands';
 import goTabCommand from './goTab';
 import suggestionsCommand from './examples/suggestionsExample';
+import infoCommand from './commandInfo';
 
 const registerCommands = (register: (command: Command, replace: boolean, silentError: boolean) => void) => {
   register(openSheetByNameCommand, false, true);
@@ -14,7 +15,9 @@ const registerCommands = (register: (command: Command, replace: boolean, silentE
   register(runMacroCommand, false, true);
   register(showAllowedCommand, false, true);
   register(goTabCommand, false, true);
-  register(suggestionsCommand, false, true);
+  register(infoCommand, false, true);
+
+  register(suggestionsCommand, false, true); // TODO delete after testing
 };
 
 export default registerCommands;

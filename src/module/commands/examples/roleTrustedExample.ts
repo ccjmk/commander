@@ -1,8 +1,10 @@
 import Command from '../../command';
 import { hasRole } from '../../commandHandler';
+import { MODULE_NAMESPACE } from '../../utils/moduleUtils';
 
 const onlyAllowTrustedCommand: Command = {
   name: 'onlyTrusted',
+  namespace: MODULE_NAMESPACE,
   schema: 'onlyTrusted',
   args: [],
   allow: () => hasRole('TRUSTED'),

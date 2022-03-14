@@ -10,21 +10,9 @@ import CommandHandler, { hasPermissions, hasRole } from './commandHandler';
 import Widget from './widget';
 import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
 import registerCommands from './commands';
-import Command from './command';
+import ModuleApi from './moduleApi';
 
 let widget: Widget;
-
-interface ModuleApi {
-  api?: {
-    commands: Command[];
-    register: (command: Command, replace?: boolean) => void;
-    execute: (input: string, ...args: any[]) => any;
-  };
-  helpers?: {
-    hasRole: (role: keyof typeof CONST.USER_ROLES) => boolean;
-    hasPermissions: (...permissions: string[]) => boolean;
-  };
-}
 
 Hooks.once('setup', async () => {
   console.log(`${MODULE_NAME} | Initializing..`);

@@ -1,8 +1,9 @@
 import Command from '../command';
-import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
+import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const runMacroCommand: Command = {
   name: 'macro',
+  namespace: MODULE_NAMESPACE,
   description: 'executes a macro by name',
   schema: 'macro $name',
   args: [

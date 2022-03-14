@@ -1,8 +1,9 @@
 import Command from '../../command';
-import { ARGUMENT_TYPES, getGame } from '../../utils/moduleUtils';
+import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../../utils/moduleUtils';
 
 const suggestionsCommand: Command = {
   name: 'sug',
+  namespace: MODULE_NAMESPACE,
   schema: 'sug $player $level $bool',
   args: [
     {
