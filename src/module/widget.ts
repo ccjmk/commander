@@ -6,6 +6,8 @@ import { MODULE_NAME, localize } from './utils/moduleUtils';
 import { getSetting, SETTING } from './settings';
 
 const ACTIVE = 'active';
+const TOO_MANY_PLACEHOLDER = '...';
+
 export default class Widget extends Application {
   constructor(private readonly handler: CommandHandler) {
     super({
@@ -96,7 +98,7 @@ export default class Widget extends Application {
     if (currentSuggestion) {
       const index = this.input.value.lastIndexOf(' ');
       const lastCommand = this.input.value.substring(0, index);
-      const suggestedContent = (currentSuggestion as HTMLElement).dataset.content;
+      const suggestedContent = quoteIfContainsSpaces((currentSuggestion as HTMLElement).dataset.content ?? '');
       const commandInput = `${lastCommand} ${suggestedContent} `;
       this.input.value = commandInput;
       this.setSuggestionActive(currentSuggestion, false);
@@ -126,7 +128,7 @@ export default class Widget extends Application {
     const current = this.getSelectedSuggestion();
     if (current) {
       const next = this.getNextSuggestion(current);
-      if (next) {
+      if (next && nextSuggestionIsNotPlaceholder(next)) {
         this.setSuggestionActive(current, false);
         this.setSuggestionActive(next, true);
       }
@@ -221,12 +223,12 @@ export default class Widget extends Application {
       return;
     }
     let newSuggs: HTMLDivElement[] = [];
-    const tooManyPlaceholder = '...';
     const maxSuggestions = getSetting(SETTING.MAX_SUGGESTIONS) as number;
     if (argSuggestions?.length) {
       if (argSuggestions.length > maxSuggestions) {
         // if the array is too big, cut it at MAXth position and append a ...
-        argSuggestions.splice(maxSuggestions, argSuggestions.length - maxSuggestions, { content: tooManyPlaceholder });
+        const deleted = argSuggestions.splice(maxSuggestions, argSuggestions.length - maxSuggestions);
+        argSuggestions.push({ content: `${TOO_MANY_PLACEHOLDER}(+${deleted.length})` });
       }
       newSuggs = argSuggestions.map((arg) => {
         const div = document.createElement('div');
@@ -268,4 +270,12 @@ export default class Widget extends Application {
     const n = Math.floor(Math.random() * maxPlaceholder) + 1; // random int
     this.input.placeholder = localize(`Widget.Placeholder${n}`);
   }
+}
+function quoteIfContainsSpaces(content: string) {
+  content = content.trim();
+  return content.indexOf(' ') > 0 ? `"${content}"` : content;
+}
+
+function nextSuggestionIsNotPlaceholder(next: Element) {
+  return !(next as HTMLElement).dataset.content?.startsWith(TOO_MANY_PLACEHOLDER);
 }
