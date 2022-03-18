@@ -1,5 +1,5 @@
 ![Module Version](https://img.shields.io/github/v/release/ccjmk/commander?color=blue)
-![FoundryVersion](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https%3A%2F%2Fgithub.com%2Fccjmk%2Fcommander%2Freleases%2Fdownload%2Fv0.1.0-pre%2Fmodule.json)
+![FoundryVersion](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https%3A%2F%2Fgithub.com%2Fccjmk%2Fcommander%2Freleases%2Flatest%2Fdownload%2Fmodule.json)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/N4N88281M)
 
