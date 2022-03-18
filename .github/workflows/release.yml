@@ -56,9 +56,9 @@ jobs:
           manifest: https://github.com/${{github.repository}}/releases/latest/download/module.json
           download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip
           license: https://github.com/${{github.repository}}/blob/main/LICENSE
-          readme: https://github.com/${{github.repository}}/blob/main/README
+          readme: https://github.com/${{github.repository}}/blob/main/README.md
           bugs: https://github.com/${{github.repository}}/issues
-          changelog: https://github.com/${{github.repository}}/blob/main/CHANGELOG
+          changelog: https://github.com/${{github.repository}}/blob/main/CHANGELOG.md
 
       - name: Build
         run: npm run build
