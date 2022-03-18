@@ -39,13 +39,13 @@ export default class Widget extends Application {
       const commandInput = this.input.value;
 
       if (code === 'Enter') {
-        this.handleEnter(commandInput);
+        this.handleSubmitCommand(commandInput);
       } else if (code === 'ArrowUp') {
-        this.handleUp();
+        this.handlePreviousSuggestion();
       } else if (code === 'ArrowDown') {
-        this.handleDown();
+        this.handleNextSuggestion();
       } else if (code === 'Tab') {
-        this.handleTab(commandInput);
+        this.handleAcceptSuggestion(commandInput);
       } else {
         this.renderSuggestions(commandInput);
       }
@@ -76,24 +76,27 @@ export default class Widget extends Application {
     this.input.focus();
   }
 
-  handleTab(commandInput: string): void {
-    let currentSuggestion = this.getSelectedSuggestion();
-    const firstSuggestion = this.getFirstSuggestion();
+  handleAcceptSuggestion(commandInput: string): void {
+    const currentSuggestion = this.getSelectedSuggestion();
+    // const firstSuggestion = this.getFirstSuggestion();
 
-    if (!currentSuggestion && firstSuggestion) {
-      currentSuggestion = firstSuggestion;
-      this.setSuggestionActive(firstSuggestion, true);
-    }
+    // if (!currentSuggestion && firstSuggestion) {
+    //   currentSuggestion = firstSuggestion;
+    //   this.setSuggestionActive(firstSuggestion, true);
+    // }
 
     if (currentSuggestion) {
-      this.handleEnter(commandInput);
+      this.handleSubmitCommand(commandInput);
     } else if (this.lastCommandSuggestion.length) {
-      this.input.value = getCommandSchemaWithoutArguments(this.lastCommandSuggestion[0]) + ' ';
-      this.renderSuggestions(this.input.value);
+      const commandNameWithSpace = getCommandSchemaWithoutArguments(this.lastCommandSuggestion[0]) + ' ';
+      if (commandInput.length < commandNameWithSpace.length) {
+        this.input.value = commandNameWithSpace;
+        this.renderSuggestions(this.input.value);
+      }
     }
   }
 
-  handleEnter(commandInput: string): void {
+  handleSubmitCommand(commandInput: string): void {
     const currentSuggestion = this.getSelectedSuggestion();
     if (currentSuggestion) {
       const index = this.input.value.lastIndexOf(' ');
@@ -109,7 +112,7 @@ export default class Widget extends Application {
     }
   }
 
-  handleUp(): void {
+  handlePreviousSuggestion(): void {
     const current = this.getSelectedSuggestion();
     if (current) {
       const prev = this.getPreviousSuggestion(current);
@@ -124,7 +127,7 @@ export default class Widget extends Application {
     return;
   }
 
-  handleDown(): void {
+  handleNextSuggestion(): void {
     const current = this.getSelectedSuggestion();
     if (current) {
       const next = this.getNextSuggestion(current);
@@ -222,6 +225,7 @@ export default class Widget extends Application {
       this.argumentSuggestions.replaceChildren();
       return;
     }
+    argSuggestions.sort((a, b) => a.content.localeCompare(b.content));
     let newSuggs: HTMLDivElement[] = [];
     const maxSuggestions = getSetting(SETTING.MAX_SUGGESTIONS) as number;
     if (argSuggestions?.length) {

@@ -4,7 +4,7 @@ import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../../utils/moduleUti
 const suggestionsCommand: Command = {
   name: 'sug',
   namespace: MODULE_NAMESPACE,
-  schema: 'sug $player $level $bool',
+  schema: 'sug $player $level $stuff $bool',
   args: [
     {
       name: 'player',
@@ -23,12 +23,16 @@ const suggestionsCommand: Command = {
       },
     },
     {
+      name: 'stuff',
+      type: ARGUMENT_TYPES.STRING,
+    },
+    {
       name: 'bool',
       type: ARGUMENT_TYPES.BOOLEAN,
     },
   ],
-  handler: ({ player, level, bool }) => {
-    ui.notifications?.info(`player: [${player}] - level: [${level}] - bool: [${bool}]`);
+  handler: ({ player, level, bool, stuff }) => {
+    ui.notifications?.info(`player: [${player}] - level: [${level}] - stuff: [${stuff}] -- bool: [${bool}]`);
   },
 };
 export default suggestionsCommand;

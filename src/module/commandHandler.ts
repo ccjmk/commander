@@ -35,12 +35,13 @@ export default class CommandHandler {
     if (startsWithOverride(input)) return; // ignore chat rolls
     input = sanitizeInput(input);
     if (!input) return;
-    input = input.toLowerCase();
-    const firstSpace = input.indexOf(' ');
-    const command = firstSpace < 1 ? input : input.substring(0, firstSpace);
+    input = input.toLocaleLowerCase();
+    const nameFromInput = getStringUntilFirstSpace(input);
+    const userIsGM = getGame().user?.isGM;
     try {
-      const allowedCommands = [...this.commandMap.values()].filter((c) => !c.allow || c.allow());
-      return allowedCommands.filter((c) => c.name.toLowerCase().trim().startsWith(command.replace(/$.*/, '')));
+      return [...this.commandMap.values()].filter(
+        (c) => c.name.startsWith(nameFromInput) && (c.allow ? c.allow() : userIsGM),
+      );
     } catch (err) {
       console.error(err); // TODO i18n this
     }
@@ -49,10 +50,11 @@ export default class CommandHandler {
   suggestArguments = (input: string): Suggestion[] | undefined => {
     if (startsWithOverride(input)) return; // ignore chat rolls
     input = sanitizeInput(input);
-    const commands = this.suggestCommand(input);
-    if (commands?.length != 1) return; // none or more than one command found, don't suggest arguments
-    const command = commands[0];
-    const inputRegex = `([a-zA-Z0-9]+|"[^"]+"|'[^']+')? *`; // search for words with or without quotes (single or double) followed by an optional space
+    input = removeOrphanQuotes(input);
+    const command = this.getCommandByInput(input);
+    if (!command) return; // none or more than one command found, don't suggest arguments
+
+    const inputRegex = `([a-zA-Z0-9]+|"[^"]+")? *`; // search for words with or without quotes followed by an optional space
     const regex =
       escapeCharactersForRegex(getCommandSchemaWithoutArguments(command)) +
       ' *' +
@@ -71,7 +73,9 @@ export default class CommandHandler {
           arg?.type === ARGUMENT_TYPES.BOOLEAN
             ? ['true', 'on', 'false', 'off'].map((s) => ({ content: s }))
             : arg.suggestions!();
-        return filter ? suggs.filter((s) => s.content.toLowerCase().startsWith(filter.toLowerCase())) : suggs;
+        return filter
+          ? suggs.filter((s) => s.content.toLocaleLowerCase().startsWith(filter.toLocaleLowerCase()))
+          : suggs;
       } catch (err) {
         console.error(err); // TODO i18n this
       }
@@ -95,7 +99,7 @@ export default class CommandHandler {
       return;
     }
 
-    const command = this.getCommand(input);
+    const command = this.getCommandByInput(input);
     if (!command) {
       ui.notifications?.warn(localize('Handler.Exec.NoMatchingCommand'));
       return;
@@ -153,6 +157,7 @@ export default class CommandHandler {
     const debugMode = getSetting(SETTING.DEBUG);
 
     if (!isValidCommand(command)) return;
+    command.name = command.name.toLocaleLowerCase();
     if (this.commandMap.get(command.name) && !replace) {
       if (debugMode) console.warn(localize('Handler.Reg.DebugNotReplaced', { commandName: command.name }));
       if (silentError) return;
@@ -164,10 +169,9 @@ export default class CommandHandler {
     if (debugMode) console.log(localize('Handler.Reg.CommandRegistered', { commandName: command.name }));
   };
 
-  private getCommand(input: string): Command | undefined {
-    const firstSpace = input.indexOf(' ');
-    const commandName = (firstSpace != -1 ? input.substring(0, firstSpace) : input).toLowerCase().trim();
-    return this.commandMap.get([...this.commandMap.keys()].find((c) => c.toLowerCase().trim() === commandName) ?? '');
+  private getCommandByInput(input: string): Command | undefined {
+    const commandName = getStringUntilFirstSpace(input);
+    return this.commandMap.get(commandName);
   }
 }
 
@@ -185,15 +189,22 @@ const buildRegex = (schema: Command['schema'], args: Command['args']) => {
   return reg;
 };
 
+function getStringUntilFirstSpace(input: string) {
+  const firstSpace = input.indexOf(' ');
+  return (firstSpace < 1 ? input : input.substring(0, firstSpace)).toLocaleLowerCase().trim();
+}
+
 function startsWithOverride(input: string) {
   return input.startsWith('/') || input.startsWith(':');
 }
 
 function isValidCommand(command: any): command is Command {
   isValidStringField(command.name, 'name');
+  isValidCommandName(command.name);
   isValidStringField(command.namespace, 'namespace');
   isValidStringField(command.description, 'description', true);
   isValidStringField(command.schema, 'schema');
+  isValidSchema(command);
   isArgumentArray(command.args);
   isValidFunction(command.handler);
   isValidFunction(command.allow, 'allow');
@@ -224,6 +235,7 @@ function isArgumentArray(args: any): args is Array<Argument> {
 
 function isValidArgument(arg: any): arg is Argument {
   isValidStringField(arg.name, 'arg.name');
+  isNotForbiddenArgumentName(arg.name);
   isValidStringField(arg.type, 'arg.type');
   if (!Object.values(ARGUMENT_TYPES).includes(arg.type)) {
     throw new Error(localize('Handler.Reg.InvalidArgument', { argTypes: Object.values(ARGUMENT_TYPES) }));
@@ -264,4 +276,36 @@ function isValidPermission(permission: string): permission is keyof typeof CONST
 }
 function escapeCharactersForRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+function removeOrphanQuotes(input: string): string {
+  const quoteCount = input.match(/"/g)?.length ?? 0;
+  if (quoteCount % 2 != 0) {
+    const pos = input.lastIndexOf('"');
+    input = input.substring(0, pos) + input.substring(pos + 1);
+  }
+  return input;
+}
+
+function isValidCommandName(name: any) {
+  const lowercaseName = name.toLocaleLowerCase().trim();
+  if (lowercaseName !== name) {
+    throw new Error(localize('Handler.Reg.CommandNameNotLowercase'));
+  }
+}
+
+function isValidSchema(command: any) {
+  const { name, schema } = command;
+  const nameFromSchema = getStringUntilFirstSpace(schema);
+
+  if (name !== nameFromSchema) {
+    throw new Error(localize('Handler.Reg.SchemaNotStartingWithCommandName'));
+  }
+
+  // TODO check that schema contains all arguments and nothing else
+}
+
+function isNotForbiddenArgumentName(argName: any) {
+  if (Object.values(ARGUMENT_TYPES).includes(argName)) {
+    throw new Error(localize('Handler.Reg.ForbiddenArgumentName', { argName }));
+  }
 }

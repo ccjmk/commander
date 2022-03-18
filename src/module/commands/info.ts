@@ -3,10 +3,10 @@ import ModuleApi from '../moduleApi';
 import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const infoCommand: Command = {
-  name: 'info',
+  name: 'i',
   namespace: MODULE_NAMESPACE,
   description: 'Shows information about a command',
-  schema: 'info $name',
+  schema: 'i $name',
   args: [
     {
       name: 'name',
@@ -26,12 +26,14 @@ const infoCommand: Command = {
       return;
     }
 
+    const allowed = command.allow ? command.allow() : getGame().user?.isGM;
     const myContent = `<h2>${command.name}</h2>
       <div><span>Namespace: </span><i>${command.namespace}</i></div>
       <hr>
       ${command.description}
       <hr>
       <div><span>Schema: </span><code>${command.schema}</code></div>
+      <div><span title="Ignoring module settings override">Allowed: <sup style="font-size: x-small;">?</sup></span>${allowed}</div>
       <ol>
         <li>arg1</li>
         <li>arg2</li>

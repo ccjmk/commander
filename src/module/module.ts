@@ -9,7 +9,7 @@ import CommandHandler, { hasPermissions, hasRole } from './commandHandler';
 
 import Widget from './widget';
 import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
-import registerCommands from './commands';
+import registerCommands from './commands/commandIndex';
 import ModuleApi from './moduleApi';
 
 let widget: Widget;

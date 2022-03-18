@@ -34,7 +34,10 @@
         "InvalidArgument": "Unable to register command with incorrect data - type is not a supported argument type {argTypes}",
         "InvalidFunction": "Unable to register command with incorrect data - '{function}' must be a function",
         "InvalidRole": "Unable to register command with incorrect role: {role}",
-        "InvalidPermission": "Unable to register command with incorrect permission: {permission}"
+        "InvalidPermission": "Unable to register command with incorrect permission: {permission}",
+        "CommandNameNotLowercase": "Command name must be lowercase",
+        "SchemaNotStartingWithCommandName": "Schema must start with command name",
+        "ForbiddenArgumentName": "Argument name '{argName}' is forbidden"
       }
     },
     "Keybindings": {

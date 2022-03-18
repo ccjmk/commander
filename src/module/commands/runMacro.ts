@@ -2,10 +2,10 @@ import Command from '../command';
 import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const runMacroCommand: Command = {
-  name: 'macro',
+  name: 'm',
   namespace: MODULE_NAMESPACE,
-  description: 'executes a macro by name',
-  schema: 'macro $name',
+  description: 'Executes a macro by name',
+  schema: 'm $name',
   args: [
     {
       name: 'name',
