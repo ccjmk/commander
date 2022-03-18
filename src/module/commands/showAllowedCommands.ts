@@ -3,6 +3,7 @@ import { getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const showAllowedCommand: Command = {
   name: 'cmd:allowed',
+  namespace: MODULE_NAMESPACE,
   description: 'logs to console all commands the current user is allowed to run',
   schema: 'cmd:allowed',
   args: [],

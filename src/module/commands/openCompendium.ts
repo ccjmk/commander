@@ -1,19 +1,22 @@
 import Command from '../command';
-import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
+import { hasRole } from '../commandHandler';
+import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const openCompendiumCommand: Command = {
   name: 'comp',
-  description: 'Opens a compendium by title',
+  namespace: MODULE_NAMESPACE,
+  description: '<b>Opens a compendium by title</b>',
   schema: 'comp $title',
   args: [
     {
       name: 'title',
       type: ARGUMENT_TYPES.STRING,
       suggestions: () => {
-        return getGame().packs.map((p) => ({ displayName: p.title }));
+        return getGame().packs.map((p) => ({ content: p.title }));
       },
     },
   ],
+  allow: () => hasRole('GAMEMASTER'),
   handler: ({ title }) => {
     const c = getGame().packs.find((p) => p.title.localeCompare(title, undefined, { sensitivity: 'base' }) === 0);
     if (!c) {

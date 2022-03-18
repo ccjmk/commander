@@ -1,14 +1,18 @@
 import Command from '../command';
-import { ARGUMENT_TYPES, getGame } from '../utils/moduleUtils';
+import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const openSheetByPlayerCommand: Command = {
   name: 'sheet:player',
+  namespace: MODULE_NAMESPACE,
   description: 'opens/closes the character sheet of the actor a given player controls.',
   schema: 'sheet:player $player',
   args: [
     {
       name: 'player',
       type: ARGUMENT_TYPES.STRING,
+      suggestions: () => {
+        return Array.from(getGame().users?.values() ?? []).map((u) => ({ content: u.name! }));
+      },
     },
   ],
   handler: ({ player }) => {

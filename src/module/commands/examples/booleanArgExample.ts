@@ -1,8 +1,9 @@
 import Command from '../../command';
-import { ARGUMENT_TYPES } from '../../utils/moduleUtils';
+import { ARGUMENT_TYPES, MODULE_NAMESPACE } from '../../utils/moduleUtils';
 
 const booleanArgCommand: Command = {
   name: 'bool',
+  namespace: MODULE_NAMESPACE,
   schema: 'bool $bool',
   args: [
     {

@@ -1,8 +1,9 @@
 import Command from '../../command';
-import { ARGUMENT_TYPES } from '../../utils/moduleUtils';
+import { ARGUMENT_TYPES, MODULE_NAMESPACE } from '../../utils/moduleUtils';
 
 const numberArgCommand: Command = {
   name: 'num',
+  namespace: MODULE_NAMESPACE,
   schema: 'num $number',
   args: [
     {

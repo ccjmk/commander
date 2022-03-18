@@ -9,9 +9,14 @@
       "OnlyGM": {
         "Name": "Restrict to GM only",
         "Hint": "Overrides command permissions to allow commands only for the Gamemaster"
+      },
+      "MaxSuggestions": {
+        "Name": "Max suggestions",
+        "Hint": "Maximum number of suggestions to show under the command prompt"
       }
     },
     "Handler": {
+      "RetrievingCommands": "Retrieving persisted commands from module settings",
       "Exec": {
         "DebugRegex": "Regex for {commandName} ([ ] not part of regex): [{regex}]",
         "DebugRunningWithArgs": "Executing '{commandName}' with args: {paramObj}`",
@@ -21,6 +26,7 @@
         "NoGmAttempt": "Running commands disabled for non-GMs by module setting"
       },
       "Reg": {
+        "DebugNotReplaced": "Skipping existing command {commandName} for non-replacing registration",
         "CommandRegistered": "Command '{commandName}' registered successfully",
         "CommandAlreadyExists": "Command '{commandName}' already exists",
         "InvalidString": "Unable to register command with incorrect data - '{fieldName}' required",
@@ -28,7 +34,10 @@
         "InvalidArgument": "Unable to register command with incorrect data - type is not a supported argument type {argTypes}",
         "InvalidFunction": "Unable to register command with incorrect data - '{function}' must be a function",
         "InvalidRole": "Unable to register command with incorrect role: {role}",
-        "InvalidPermission": "Unable to register command with incorrect permission: {permission}"
+        "InvalidPermission": "Unable to register command with incorrect permission: {permission}",
+        "CommandNameNotLowercase": "Command name must be lowercase",
+        "SchemaNotStartingWithCommandName": "Schema must start with command name",
+        "ForbiddenArgumentName": "Argument name '{argName}' is forbidden"
       }
     },
     "Keybindings": {

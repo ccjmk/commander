@@ -1,4 +1,4 @@
-import { getSetting, SETTING } from './settingsConfig';
+import { getSetting, SETTING } from './settings';
 import { getGame, localize, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
 import Widget from './widget';
 

@@ -2,7 +2,7 @@ const typescript = require('@rollup/plugin-typescript');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 
 module.exports = {
-  input: 'src/module/commander.ts',
+  input: { ['commander']: 'src/module/module.ts' },
   output: {
     dir: 'dist/module',
     format: 'es',

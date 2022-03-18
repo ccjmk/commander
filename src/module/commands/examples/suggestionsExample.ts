@@ -1,9 +1,10 @@
 import Command from '../../command';
-import { ARGUMENT_TYPES, getGame } from '../../utils/moduleUtils';
+import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../../utils/moduleUtils';
 
 const suggestionsCommand: Command = {
   name: 'sug',
-  schema: 'sug $player $level $bool',
+  namespace: MODULE_NAMESPACE,
+  schema: 'sug $player $level $stuff $bool',
   args: [
     {
       name: 'player',
@@ -11,23 +12,27 @@ const suggestionsCommand: Command = {
       suggestions: () => {
         const users = getGame().users?.values();
         if (!users) return [];
-        return [...users].map((u) => ({ displayName: u.name! }));
+        return [...users].map((u) => ({ content: u.name! }));
       },
     },
     {
       name: 'level',
       type: ARGUMENT_TYPES.NUMBER,
       suggestions: () => {
-        return Array.fromRange(20).map((n) => ({ displayName: n + 1 + '' }));
+        return Array.fromRange(20).map((n) => ({ content: n + 1 + '' }));
       },
+    },
+    {
+      name: 'stuff',
+      type: ARGUMENT_TYPES.STRING,
     },
     {
       name: 'bool',
       type: ARGUMENT_TYPES.BOOLEAN,
     },
   ],
-  handler: ({ player, level, bool }) => {
-    ui.notifications?.info(`player: [${player}] - level: [${level}] - bool: [${bool}]`);
+  handler: ({ player, level, bool, stuff }) => {
+    ui.notifications?.info(`player: [${player}] - level: [${level}] - stuff: [${stuff}] -- bool: [${bool}]`);
   },
 };
 export default suggestionsCommand;
