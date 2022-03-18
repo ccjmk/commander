@@ -2,7 +2,7 @@ import Command from './command';
 import Suggestion from './suggestion';
 import CommandHandler from './commandHandler';
 import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
-import { MODULE_NAME, localize } from './utils/moduleUtils';
+import { localize, MODULE_NAMESPACE } from './utils/moduleUtils';
 import { getSetting, SETTING } from './settings';
 
 const ACTIVE = 'active';
@@ -14,7 +14,7 @@ export default class Widget extends Application {
       popOut: false,
       minimizable: false,
       resizable: false,
-      template: `modules/${MODULE_NAME}/templates/widget.html`,
+      template: `modules/${MODULE_NAMESPACE}/templates/widget.html`,
     });
     this.handler = handler;
   }
