@@ -200,8 +200,9 @@ function startsWithOverride(input: string) {
 
 function isValidCommand(command: any): command is Command {
   isValidStringField(command.name, 'name');
-  isValidCommandName(command.name);
+  isValidLowercaseString(command.name);
   isValidStringField(command.namespace, 'namespace');
+  isValidLowercaseString(command.namespace);
   isValidStringField(command.description, 'description', true);
   isValidStringField(command.schema, 'schema');
   isValidSchema(command);
@@ -286,7 +287,7 @@ function removeOrphanQuotes(input: string): string {
   return input;
 }
 
-function isValidCommandName(name: any) {
+function isValidLowercaseString(name: any) {
   const lowercaseName = name.toLocaleLowerCase().trim();
   if (lowercaseName !== name) {
     throw new Error(localize('Handler.Reg.CommandNameNotLowercase'));

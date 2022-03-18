@@ -5,7 +5,6 @@ import openSheetByNameCommand from './openSheetByName';
 import openSheetByPlayerCommand from './openSheetByPlayer';
 import showAllowedCommand from './showAllowedCommands';
 import goTabCommand from './goTab';
-import suggestionsCommand from './examples/suggestionsExample';
 import infoCommand from './info';
 import tokenActiveEffectCommand from './tokenActiveEffect';
 
@@ -18,8 +17,6 @@ const registerCommands = (register: (command: Command, replace: boolean, silentE
   register(goTabCommand, false, true);
   register(infoCommand, false, true);
   register(tokenActiveEffectCommand, false, true);
-
-  register(suggestionsCommand, false, true); // TODO delete after testing
 };
 
 export default registerCommands;

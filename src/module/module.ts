@@ -27,7 +27,9 @@ Hooks.once('setup', async () => {
   const module: Game.ModuleData<foundry.packages.ModuleData> & ModuleApi = getGame().modules.get(MODULE_NAMESPACE)!;
   module.api = { commands, register, execute };
   module.helpers = { hasRole, hasPermissions };
+});
 
+Hooks.once('ready', () => {
   console.log(`${MODULE_NAME} | Commander ready..`);
   Hooks.callAll('commanderReady', module);
 });

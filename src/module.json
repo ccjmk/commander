@@ -1,9 +1,18 @@
 {
   "name": "commander",
   "title": "Commander",
-  "description": "Command launcher for running and registering commands executable solely by keyboard",
+  "description": "Command launcher for running and registering commands executable by keyboard",
   "version": "This is auto replaced",
-  "author": "ccjmk",
+  "authors": [
+    {
+      "name": "ccjmk",
+      "url": "https://github.com/ccjmk"
+    },
+    {
+      "name": "Miguel Galante",
+      "url": "https://www.linkedin.com/in/miguelgalante"
+    }
+  ],
   "minimumCoreVersion": "9",
   "compatibleCoreVersion": "9",
   "scripts": [],
@@ -22,10 +31,10 @@
   "url": "This is auto replaced",
   "manifest": "This is auto replaced",
   "download": "This is auto replaced",
-  "license": "",
-  "readme": "",
-  "bugs": "",
-  "changelog": "",
+  "license": "This is auto replaced",
+  "readme": "This is auto replaced",
+  "bugs": "This is auto replaced",
+  "changelog": "This is auto replaced",
   "system": [],
   "library": false
 }
