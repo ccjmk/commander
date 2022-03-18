@@ -22,22 +22,31 @@ Receives a Command to register; the command is only registered if it passes inte
 
 ```ts
 interface Command {
-  name: string;
+  name: string; // must be lowercase
+  namespace: string; // unused for now but mandatory
   description?: string;
-  schema: string;
+  schema: string; // must start with name, followed by argument names prefixed with '$'
   args: Argument[];
   allow?: () => boolean;
   handler: (...params: any) => any;
 }
 interface Argument {
-  name: string;
+  name: string; // 'string'|'number'|'boolean'|'raw' names are reserved
   type: ARGUMENT_TYPES;
+  suggestions?: (...params: any) => Suggestion[];
 }
 enum ARGUMENT_TYPES {
   'string', // accepts spaces ONLY IF you write the next between quotes.
   'number', // accepts numbers with decimals. It's just parseFloat(arg), so be tame with the decimals. Consider yourself warned!
   'boolean', // accepts 'true', 'on', 'false', 'off'
   'raw', // returns the whole remaining input string. If used with other arguments this MUST BE LAST.
+}
+interface Suggestion {
+  content: string; // what is shown on the suggestion
+  icon?: string; // icon is a font-awesome class name, takes precedence over img
+  img?: string;
+  bold?: boolean; // not implemented yet
+  italics?: boolean; // not implemented yet
 }
 ```
 
