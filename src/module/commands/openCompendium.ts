@@ -5,7 +5,7 @@ import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils'
 const openCompendiumCommand: Command = {
   name: 'comp',
   namespace: MODULE_NAMESPACE,
-  description: '<b>Opens a compendium by title</b>',
+  description: 'Opens a compendium by title',
   schema: 'comp $title',
   args: [
     {
@@ -23,7 +23,7 @@ const openCompendiumCommand: Command = {
       ui.notifications?.error(`Unable to find compendium pack with title [${title}]`);
       return;
     }
-    new Compendium(c).render(true);
+    c.apps[0]?.render(true);
   },
 };
 export default openCompendiumCommand;

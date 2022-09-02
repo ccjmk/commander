@@ -1,14 +1,13 @@
 import Command from './command';
-import Suggestion from './suggestion';
+import ArgumentSuggestion from './argumentSuggestion';
 import CommandHandler from './commandHandler';
 import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
-import { localize, MODULE_NAMESPACE } from './utils/moduleUtils';
-import { getSetting, SETTING } from './settings';
+import { localize, MODULE_NAMESPACE, getSetting, SETTING } from './utils/moduleUtils';
 
 const ACTIVE = 'active';
 const TOO_MANY_PLACEHOLDER = '...';
 
-export default class Widget extends Application {
+export default class Commander extends Application {
   constructor(private readonly handler: CommandHandler) {
     super({
       popOut: false,
@@ -23,6 +22,7 @@ export default class Widget extends Application {
   private commandSuggestions!: HTMLDivElement;
   private argumentSuggestions!: HTMLDivElement;
   private lastCommandSuggestion: Command[] = [];
+  private argSuggestionOffset = 0;
 
   activateListeners() {
     this.input = document.getElementById('commander-input') as HTMLInputElement;
@@ -35,19 +35,23 @@ export default class Widget extends Application {
       }
     });
     this.input.addEventListener('keyup', ({ code }) => {
-      // need keyUP to have the latest key registered
       const commandInput = this.input.value;
 
-      if (code === 'Enter') {
-        this.handleSubmitCommand(commandInput);
-      } else if (code === 'ArrowUp') {
-        this.handlePreviousSuggestion();
-      } else if (code === 'ArrowDown') {
-        this.handleNextSuggestion();
-      } else if (code === 'Tab') {
-        this.handleAcceptSuggestion(commandInput);
-      } else {
-        this.renderSuggestions(commandInput);
+      switch (code) {
+        case 'Enter':
+          this.submitCommand(commandInput);
+          break;
+        case 'ArrowUp':
+          this.previousArgSuggestion();
+          break;
+        case 'ArrowDown':
+          this.nextArgSuggestion();
+          break;
+        case 'Tab':
+          this.acceptSuggestion(commandInput);
+          break;
+        default:
+          this.renderSuggestions(commandInput);
       }
     });
 
@@ -76,8 +80,8 @@ export default class Widget extends Application {
     this.input.focus();
   }
 
-  handleAcceptSuggestion(commandInput: string): void {
-    const currentSuggestion = this.getSelectedSuggestion();
+  acceptSuggestion(commandInput: string): void {
+    const currentSuggestion = getSelectedSuggestion();
     // const firstSuggestion = this.getFirstSuggestion();
 
     // if (!currentSuggestion && firstSuggestion) {
@@ -86,7 +90,7 @@ export default class Widget extends Application {
     // }
 
     if (currentSuggestion) {
-      this.handleSubmitCommand(commandInput);
+      this.submitCommand(commandInput);
     } else if (this.lastCommandSuggestion.length) {
       const commandNameWithSpace = getCommandSchemaWithoutArguments(this.lastCommandSuggestion[0]) + ' ';
       if (commandInput.length < commandNameWithSpace.length) {
@@ -96,15 +100,15 @@ export default class Widget extends Application {
     }
   }
 
-  handleSubmitCommand(commandInput: string): void {
-    const currentSuggestion = this.getSelectedSuggestion();
+  submitCommand(commandInput: string): void {
+    const currentSuggestion = getSelectedSuggestion();
     if (currentSuggestion) {
       const index = this.input.value.lastIndexOf(' ');
       const lastCommand = this.input.value.substring(0, index);
       const suggestedContent = quoteIfContainsSpaces((currentSuggestion as HTMLElement).dataset.content ?? '');
       const commandInput = `${lastCommand} ${suggestedContent} `;
       this.input.value = commandInput;
-      this.setSuggestionActive(currentSuggestion, false);
+      deselectSuggestion(currentSuggestion);
       this.renderSuggestions(commandInput);
     } else {
       this.handler.execute(commandInput);
@@ -112,62 +116,54 @@ export default class Widget extends Application {
     }
   }
 
-  handlePreviousSuggestion(): void {
-    const current = this.getSelectedSuggestion();
-    if (current) {
-      const prev = this.getPreviousSuggestion(current);
-      if (prev) {
-        this.setSuggestionActive(current, false);
-        this.setSuggestionActive(prev, true);
-      }
-    } else {
-      const lastSuggestion = this.getLastSuggestion();
-      lastSuggestion && this.setSuggestionActive(lastSuggestion, true);
+  previousArgSuggestion(): void {
+    const current = getSelectedSuggestion();
+    if (!current) {
+      const lastSuggestion = getLastSuggestion();
+      lastSuggestion && selectSuggestion(lastSuggestion);
+      return;
     }
-    return;
-  }
+    const prev = getPreviousSuggestion(current);
+    if (!prev) return;
 
-  handleNextSuggestion(): void {
-    const current = this.getSelectedSuggestion();
-    if (current) {
-      const next = this.getNextSuggestion(current);
-      if (next && nextSuggestionIsNotPlaceholder(next)) {
-        this.setSuggestionActive(current, false);
-        this.setSuggestionActive(next, true);
-      }
+    if (suggestionIsNotPlaceholder(prev)) {
+      deselectSuggestion(current);
+      selectSuggestion(prev);
     } else {
-      const firstSuggestion = this.getFirstSuggestion();
-      firstSuggestion && this.setSuggestionActive(firstSuggestion, true);
-    }
-    return;
-  }
-
-  setSuggestionActive(suggestion: Element, isActive: boolean): void {
-    if (isActive) {
-      suggestion.classList.add(ACTIVE);
-    } else {
-      suggestion.classList.remove(ACTIVE);
+      if (this.argSuggestionOffset > 0) this.argSuggestionOffset--;
+      this.renderArgumentSuggestions(this.handler.suggestArguments(this.input.value), this.argSuggestionOffset);
+      const newFirst = getFirstSuggestion();
+      if (!newFirst) return;
+      const newNext = suggestionIsNotPlaceholder(newFirst) ? newFirst : getNextSuggestion(newFirst);
+      if (!newNext) return;
+      deselectSuggestion(getSelectedSuggestion());
+      selectSuggestion(newNext);
     }
   }
 
-  getNextSuggestion(current: Element) {
-    return current.nextElementSibling;
-  }
+  nextArgSuggestion(): void {
+    const current = getSelectedSuggestion();
+    if (!current) {
+      const firstSuggestion = getFirstSuggestion();
+      firstSuggestion && selectSuggestion(firstSuggestion);
+      return;
+    }
+    const next = getNextSuggestion(current);
+    if (!next) return;
 
-  getPreviousSuggestion(current: Element) {
-    return current.previousElementSibling;
-  }
-
-  getSelectedSuggestion() {
-    return document.querySelector(`#commander-args-suggestions .${ACTIVE}`);
-  }
-
-  getFirstSuggestion() {
-    return document.querySelector('#commander-args-suggestions .commander-suggestion:first-child');
-  }
-
-  getLastSuggestion() {
-    return document.querySelector('#commander-args-suggestions .commander-suggestion:last-child');
+    if (suggestionIsNotPlaceholder(next)) {
+      deselectSuggestion(current);
+      selectSuggestion(next);
+    } else {
+      this.argSuggestionOffset++;
+      this.renderArgumentSuggestions(this.handler.suggestArguments(this.input.value), this.argSuggestionOffset);
+      const newLast = getLastSuggestion();
+      if (!newLast) return;
+      const newNext = suggestionIsNotPlaceholder(newLast) ? newLast : getPreviousSuggestion(newLast);
+      if (!newNext) return;
+      deselectSuggestion(getSelectedSuggestion());
+      selectSuggestion(newNext);
+    }
   }
 
   close(): Promise<void> {
@@ -183,6 +179,7 @@ export default class Widget extends Application {
     const commandSuggestions = this.handler.suggestCommand(commandInput);
     this.renderCommandSuggestions(commandSuggestions);
     this.renderArgumentSuggestions(this.handler.suggestArguments(this.input.value));
+    this.argSuggestionOffset = 0;
     this.lastCommandSuggestion = commandSuggestions || [];
   }
 
@@ -219,7 +216,7 @@ export default class Widget extends Application {
     this.commandSuggestions.style.display = 'flex';
   };
 
-  renderArgumentSuggestions = (argSuggestions?: Suggestion[]) => {
+  renderArgumentSuggestions = (argSuggestions?: ArgumentSuggestion[], offset = 0) => {
     if (!argSuggestions) {
       this.argumentSuggestions.style.display = 'none';
       this.argumentSuggestions.replaceChildren();
@@ -229,9 +226,14 @@ export default class Widget extends Application {
     let newSuggs: HTMLDivElement[] = [];
     const maxSuggestions = getSetting(SETTING.MAX_SUGGESTIONS) as number;
     if (argSuggestions?.length) {
-      if (argSuggestions.length > maxSuggestions) {
+      if (offset) {
+        argSuggestions = argSuggestions.slice(offset);
+        argSuggestions.unshift({ content: `${TOO_MANY_PLACEHOLDER}(+${offset})` });
+      }
+      const offsetInLength = offset ? 1 : 0;
+      if (argSuggestions.length - offsetInLength > maxSuggestions) {
         // if the array is too big, cut it at MAXth position and append a ...
-        const deleted = argSuggestions.splice(maxSuggestions, argSuggestions.length - maxSuggestions);
+        const deleted = argSuggestions.splice(maxSuggestions + offsetInLength, argSuggestions.length - maxSuggestions);
         argSuggestions.push({ content: `${TOO_MANY_PLACEHOLDER}(+${deleted.length})` });
       }
       newSuggs = argSuggestions.map((arg) => {
@@ -249,23 +251,15 @@ export default class Widget extends Application {
           img.setAttribute('src', arg.img);
           div.prepend(img);
         }
-        // div.addEventListener('click', (e) => { // TODO consider how to appropriately build into the existing input value without replacing already-written args before
-        //   const suggestion = (e.target as HTMLElement).innerHTML;
-        //   if (suggestion !== tooManyPlaceholder) {
-        //     this.input.value = `${getCommandSchemaWithoutArguments(this.command!)} ${suggestion}`; // if we have argument suggestions 'command' is set
-        //   }
-        //   this.input.focus();
-        // });
         return div;
       });
     }
 
     this.argumentSuggestions.replaceChildren(...newSuggs);
     this.argumentSuggestions.style.display = 'flex';
-
-    const firstSuggestion = this.getFirstSuggestion();
+    const firstSuggestion = getFirstSuggestion();
     if (firstSuggestion) {
-      this.setSuggestionActive(firstSuggestion, true);
+      selectSuggestion(firstSuggestion);
     }
   };
 
@@ -275,11 +269,40 @@ export default class Widget extends Application {
     this.input.placeholder = localize(`Widget.Placeholder${n}`);
   }
 }
+
 function quoteIfContainsSpaces(content: string) {
   content = content.trim();
   return content.indexOf(' ') > 0 ? `"${content}"` : content;
 }
 
-function nextSuggestionIsNotPlaceholder(next: Element) {
+function suggestionIsNotPlaceholder(next: Element) {
   return !(next as HTMLElement).dataset.content?.startsWith(TOO_MANY_PLACEHOLDER);
+}
+
+function selectSuggestion(suggestion: Element) {
+  suggestion.classList.add(ACTIVE);
+}
+
+function deselectSuggestion(suggestion: Element | null) {
+  if (suggestion) suggestion.classList.remove(ACTIVE);
+}
+
+function getNextSuggestion(current: Element) {
+  return current.nextElementSibling;
+}
+
+function getPreviousSuggestion(current: Element) {
+  return current.previousElementSibling;
+}
+
+function getSelectedSuggestion() {
+  return document.querySelector(`#commander-args-suggestions .${ACTIVE}`);
+}
+
+function getFirstSuggestion() {
+  return document.querySelector('#commander-args-suggestions .commander-suggestion:first-child');
+}
+
+function getLastSuggestion() {
+  return document.querySelector('#commander-args-suggestions .commander-suggestion:last-child');
 }

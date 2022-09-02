@@ -13,13 +13,14 @@ This module provides the command-line input and the API for registering new comm
 
 ## Bundled Commands
 
-* Command info (i)
-* Log commands the current use can use (cmd:allowed)
+* Command info (info $command)
+* Show commands the current user can use (help)
 * Open tab (go $tab)
 * Open compendium (comp $title)
 * Run macro by name (m $name)
-* Open character sheet by Player name (sheet:player $name)
-* Open character sheet by Actor name (sheet:name $name)
+* Open character sheet by Player name (player $name)
+* Open character sheet by Actor name (pc $name)
+* Open non-player character sheet by name (npc $name)
 * Apply active effect to selected tokens -just visual- (tae $effect)
 
 It is not the intention of this module to provide commands specific to particular systems, but mostly the tooling and more generic commands applicable to anyone regardless of game system. If you have such a command that you want to share, [don't be afraid to open a pull request](https://github.com/ccjmk/commander/pulls)!
@@ -28,9 +29,9 @@ It is not the intention of this module to provide commands specific to particula
 
 ## Executing Commands
 
-You can open the Commander widget by pressing the corresponding keybinding, configurable in-game, with the default been Ctrl+Backtick.  *(the ` right next to the 1 in english keyboards)*
+You can open the Commander widget by pressing (by default) Alt+Backtick *(the \` right next to the 1 in english keyboards)*. Shortcut is configurable ingame using the default keybinding menu.
 
-Then you can start typing! Command suggestions will pop up as you type, you can auto-accept the selected suggestion with `Tab`/`Enter`, or select other suggestions using `Up` or `Down`. An `Enter` when no suggestion is selected sends the Command for execution.
+Then you can start typing! Command suggestions will pop up as you type, you can auto-accept the selected suggestion with `Tab`/`Enter`, or select other suggestions using `Up` or `Down`. An `Enter` when no suggestion is selected sends the Command for execution, else it auto-fills that suggestion.
 
 ## Licensing
 

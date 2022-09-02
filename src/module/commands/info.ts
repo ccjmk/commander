@@ -3,10 +3,10 @@ import ModuleApi from '../moduleApi';
 import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
 const infoCommand: Command = {
-  name: 'i',
+  name: 'info',
   namespace: MODULE_NAMESPACE,
   description: 'Shows information about a command',
-  schema: 'i $name',
+  schema: 'info $name',
   args: [
     {
       name: 'name',
@@ -27,18 +27,16 @@ const infoCommand: Command = {
     }
 
     const allowed = command.allow ? command.allow() : getGame().user?.isGM;
-    const myContent = `<h2>${command.name}</h2>
-      <div><span>Namespace: </span><i>${command.namespace}</i></div>
+    const args = command.args.map((arg) => `<li>${arg.name} (${arg.type})</li>`).join('');
+    const myContent = `<h2>"${command.name?.toUpperCase()}"</h2>
+      <div><span>Namespace - </span><i>${command.namespace}</i></div>
       <hr>
-      ${command.description}
+      ${command.description ?? 'No description provided'}
       <hr>
-      <div><span>Schema: </span><code>${command.schema}</code></div>
-      <div><span title="Ignoring module settings override">Allowed: <sup style="font-size: x-small;">?</sup></span>${allowed}</div>
-      <ol>
-        <li>arg1</li>
-        <li>arg2</li>
-        <li>arg3</li>
-      </ol>`;
+      <div><span>Schema - </span><code>${command.schema}</code></div>
+      <div><span title="Ignoring module settings override">Allowed<sup style="font-size: x-small;">?</sup> - </span>${allowed}</div>
+      <div><span>Arguments</span></div>
+      <ul>${args}</ul>`;
 
     new Dialog({
       title: `Command Info > ${command?.name}`,

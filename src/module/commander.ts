@@ -3,16 +3,15 @@
  * License: MIT, see LICENSE
  */
 
-import { registerSettings } from './settings';
 import { registerKeybindings } from './keybinding';
 import CommandHandler, { hasPermissions, hasRole } from './commandHandler';
 
-import Widget from './widget';
-import { getGame, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
-import registerCommands from './commands/commandIndex';
+import Commander from './commanderApplication';
+import { getGame, MODULE_NAME, MODULE_NAMESPACE, registerSettings, handleIntroMessage } from './utils/moduleUtils';
+import registerCommands from './commands/_index';
 import ModuleApi from './moduleApi';
 
-let widget: Widget;
+let widget: Commander;
 
 Hooks.once('setup', async () => {
   console.log(`${MODULE_NAME} | Initializing..`);
@@ -20,7 +19,7 @@ Hooks.once('setup', async () => {
   const handler = new CommandHandler();
   registerCommands(handler._register);
 
-  widget = new Widget(handler);
+  widget = new Commander(handler);
   registerKeybindings(widget);
 
   const { commands, register, execute } = handler;
@@ -31,5 +30,6 @@ Hooks.once('setup', async () => {
 
 Hooks.once('ready', () => {
   console.log(`${MODULE_NAME} | Commander ready..`);
-  Hooks.callAll('commanderReady', module);
+  Hooks.callAll('commanderReady', getGame().modules.get(MODULE_NAMESPACE));
+  handleIntroMessage();
 });

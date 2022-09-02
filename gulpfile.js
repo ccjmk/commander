@@ -89,17 +89,26 @@ async function clean() {
 /**
  * Get the data path of Foundry VTT based on what is configured in `foundryconfig.json`
  */
-function getDataPath() {
+function getDataPaths() {
   const config = fs.readJSONSync('foundryconfig.json');
+  const dataPath = config?.dataPath;
 
-  if (config?.dataPath) {
-    if (!fs.existsSync(path.resolve(config.dataPath))) {
-      throw new Error('User Data path invalid, no Data directory found');
-    }
+  if (dataPath) {
+    const dataPaths = Array.isArray(dataPath) ? dataPath : [dataPath];
 
-    return path.resolve(config.dataPath);
+    return dataPaths.map((dataPath) => {
+      if (typeof dataPath !== 'string') {
+        throw new Error(
+          `Property dataPath in foundryconfig.json is expected to be a string or an array of strings, but found ${dataPath}`,
+        );
+      }
+      if (!fs.existsSync(path.resolve(dataPath))) {
+        throw new Error(`The dataPath ${dataPath} does not exist on the file system`);
+      }
+      return path.resolve(dataPath);
+    });
   } else {
-    throw new Error('No User Data path defined in foundryconfig.json');
+    throw new Error('No dataPath defined in foundryconfig.json');
   }
 }
 
@@ -111,19 +120,23 @@ async function linkUserData() {
   if (fs.existsSync(path.resolve(sourceDirectory, 'module.json'))) {
     destinationDirectory = 'modules';
   } else {
-    throw new Error('Could not find module.json');
+    throw new Error(`Could not find ${chalk.blueBright('module.json')}`);
   }
 
-  const linkDirectory = path.resolve(getDataPath(), 'Data', destinationDirectory, name);
+  const linkDirectories = getDataPaths().map((dataPath) => path.resolve(dataPath, 'Data', destinationDirectory, name));
 
-  if (argv.clean || argv.c) {
-    console.log(`Removing build in ${linkDirectory}.`);
+  for (const linkDirectory of linkDirectories) {
+    if (argv.clean || argv.c) {
+      console.log(`Removing build in ${linkDirectory}.`);
 
-    await fs.remove(linkDirectory);
-  } else if (!fs.existsSync(linkDirectory)) {
-    console.log(`Linking dist to ${linkDirectory}.`);
-    await fs.ensureDir(path.resolve(linkDirectory, '..'));
-    await fs.symlink(path.resolve(distDirectory), linkDirectory);
+      await fs.remove(linkDirectory);
+    } else if (!fs.existsSync(linkDirectory)) {
+      console.log(`Linking dist to ${linkDirectory}.`);
+      await fs.ensureDir(path.resolve(linkDirectory, '..'));
+      await fs.symlink(path.resolve(distDirectory), linkDirectory);
+    } else {
+      console.log(`SKIPPING - link to ${linkDirectory} already exists`);
+    }
   }
 }
 

@@ -5,10 +5,9 @@ import rawArg from './arguments/rawArg';
 import stringArg from './arguments/stringArg';
 import Command from './command';
 import Argument from './argument';
-import Suggestion from './suggestion';
-import { getSetting, SETTING } from './settings';
+import ArgumentSuggestion from './argumentSuggestion';
 import { getCommandSchemaWithoutArguments } from './utils/commandUtils';
-import { getGame, MODULE_NAME } from './utils/moduleUtils';
+import { getGame, MODULE_NAME, getSetting, SETTING } from './utils/moduleUtils';
 import { ARGUMENT_TYPES, localize } from './utils/moduleUtils';
 
 const argumentMap = new Map<ARGUMENT_TYPES, ArgumentType>();
@@ -23,8 +22,6 @@ export default class CommandHandler {
 
   constructor() {
     this.commandMap = new Map<string, Command>();
-    // console.log(`${MODULE_NAME} | ${localize('Handler.RetrievingCommands')}`);
-    // retrieveCommandsFromModuleSetting().forEach(c => this._register(c, false, true));
   }
 
   get commands(): Command[] {
@@ -47,7 +44,7 @@ export default class CommandHandler {
     }
   };
 
-  suggestArguments = (input: string): Suggestion[] | undefined => {
+  suggestArguments = (input: string): ArgumentSuggestion[] | undefined => {
     if (startsWithOverride(input)) return; // ignore chat rolls
     input = sanitizeInput(input);
     input = removeOrphanQuotes(input);

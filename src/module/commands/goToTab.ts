@@ -1,10 +1,10 @@
 import Command from '../command';
 import { ARGUMENT_TYPES, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
-const goTabCommand: Command = {
+const tabCommand: Command = {
   name: 'go',
   namespace: MODULE_NAMESPACE,
-  description: 'Switches rightside tab (and focuses input for Chat tab)',
+  description: 'Switches right-side tab (and focuses chat input or search input where available)',
   schema: 'go $tab',
   args: [
     {
@@ -24,7 +24,10 @@ const goTabCommand: Command = {
     ui.sidebar!.activateTab(tab);
     if (tab === 'chat') {
       (document.querySelector('textarea#chat-message') as HTMLTextAreaElement)?.focus();
+    } else {
+      const searchInput = document.querySelector(`#${tab} [name="search"]`) as HTMLInputElement | undefined;
+      if (searchInput) searchInput.focus();
     }
   },
 };
-export default goTabCommand;
+export default tabCommand;

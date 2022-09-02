@@ -1,17 +1,16 @@
-import { getSetting, SETTING } from './settings';
-import { getGame, localize, MODULE_NAME, MODULE_NAMESPACE } from './utils/moduleUtils';
-import Widget from './widget';
+import { getGame, localize, MODULE_NAME, MODULE_NAMESPACE, getSetting, SETTING } from './utils/moduleUtils';
+import Commander from './commanderApplication';
 
-const { CONTROL } = KeyboardManager.MODIFIER_KEYS;
+const { ALT } = KeyboardManager.MODIFIER_KEYS;
 
-export const registerKeybindings = (widget: Widget) => {
+export const registerKeybindings = (widget: Commander) => {
   getGame().keybindings.register(MODULE_NAMESPACE, 'openCommander', {
     name: localize('Keybindings.Name'),
     hint: localize('Keybindings.Hint'),
     editable: [
       {
         key: 'Backquote',
-        modifiers: [CONTROL],
+        modifiers: [ALT],
       },
     ],
     onDown: () => {

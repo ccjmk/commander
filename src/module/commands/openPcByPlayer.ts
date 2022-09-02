@@ -1,11 +1,11 @@
 import Command from '../command';
 import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
-const openSheetByPlayerCommand: Command = {
-  name: 'sheet:player',
+const openPcByPlayerCommand: Command = {
+  name: 'player',
   namespace: MODULE_NAMESPACE,
   description: 'opens/closes the character sheet of the actor a given player controls.',
-  schema: 'sheet:player $player',
+  schema: 'player $player',
   args: [
     {
       name: 'player',
@@ -18,7 +18,7 @@ const openSheetByPlayerCommand: Command = {
   handler: ({ player }) => {
     const sheet = getGame().users!.getName(player)?.character?.sheet;
     if (!sheet) {
-      const msg = `Player "${player}" undefined`;
+      const msg = `Player or character for "${player}" undefined`;
       ui.notifications?.error(msg);
       throw new Error(msg);
     }
@@ -29,4 +29,4 @@ const openSheetByPlayerCommand: Command = {
     }
   },
 };
-export default openSheetByPlayerCommand;
+export default openPcByPlayerCommand;

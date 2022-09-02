@@ -1,5 +1,5 @@
 {
-  "name": "commander",
+  "id": "commander",
   "title": "Commander",
   "description": "Command launcher for running and registering commands executable by keyboard",
   "version": "This is auto replaced",
@@ -13,13 +13,18 @@
       "url": "https://www.linkedin.com/in/miguelgalante"
     }
   ],
-  "minimumCoreVersion": "9",
-  "compatibleCoreVersion": "9",
+  "compatibility": {
+    "minimum": 10,
+    "verified": "10.284"
+  },
   "scripts": [],
   "esmodules": ["module/commander.js"],
   "styles": ["styles/commander.css"],
   "packs": [],
-  "dependencies": [],
+  "relationships": {
+    "systems": [],
+    "requires": []
+  },
   "languages": [
     {
       "lang": "en",
@@ -35,6 +40,5 @@
   "readme": "This is auto replaced",
   "bugs": "This is auto replaced",
   "changelog": "This is auto replaced",
-  "system": [],
   "library": false
 }

@@ -1,17 +1,19 @@
 import Command from '../command';
 import { ARGUMENT_TYPES, getGame, MODULE_NAMESPACE } from '../utils/moduleUtils';
 
-const openSheetByNameCommand: Command = {
-  name: 'sheet:name',
+const openPcByNameCommand: Command = {
+  name: 'pc',
   namespace: MODULE_NAMESPACE,
-  description: 'opens/closes the character sheet of a given actor by name.',
-  schema: 'sheet:name $actor',
+  description: 'opens/closes the character sheet of a given Player Character by name.',
+  schema: 'pc $actor',
   args: [
     {
       name: 'actor',
       type: ARGUMENT_TYPES.STRING,
       suggestions: () => {
-        return Array.from(getGame().actors?.values() ?? []).map((a) => ({ content: a.name! }));
+        return Array.from(getGame().actors?.values() ?? [])
+          .filter((a) => a.type == 'character')
+          .map((a) => ({ content: a.name! }));
       },
     },
   ],
@@ -29,4 +31,4 @@ const openSheetByNameCommand: Command = {
     }
   },
 };
-export default openSheetByNameCommand;
+export default openPcByNameCommand;
