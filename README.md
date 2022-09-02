@@ -29,7 +29,7 @@ It is not the intention of this module to provide commands specific to particula
 
 ## Executing Commands
 
-You can open the Commander widget by pressing (by default) Alt+Backtick *(the \` right next to the 1 in english keyboards)*. Shortcut is configurable ingame using the default keybinding menu.
+You can open the Commander widget by pressing (by default) `Alt+Q`. Shortcut is configurable ingame using the default keybinding menu.
 
 Then you can start typing! Command suggestions will pop up as you type, you can auto-accept the selected suggestion with `Tab`/`Enter`, or select other suggestions using `Up` or `Down`. An `Enter` when no suggestion is selected sends the Command for execution, else it auto-fills that suggestion.
 

@@ -9,7 +9,7 @@ export const registerKeybindings = (widget: Commander) => {
     hint: localize('Keybindings.Hint'),
     editable: [
       {
-        key: 'Backquote',
+        key: 'Q',
         modifiers: [ALT],
       },
     ],
